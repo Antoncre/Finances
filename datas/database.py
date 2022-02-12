@@ -1,11 +1,11 @@
 """
-zapisuje informacje w pliku csv w formacie:
-[data, wartość, opis]
+saving info in csv file as lists in format:
+[date, price, description]
 """
 from datetime import datetime
 from operator import itemgetter
 
-T = 'Transactions.csv'
+T = "Transactions.csv"
 now = datetime.now()
 
 
@@ -20,7 +20,7 @@ def listing():
         return [
             {'date': line[0], 'price': float(line[1]), 'description': line[2]}
             for line in lines
-        ]
+            ]
 
 
 def chck_to_delete(v, typ):
@@ -40,28 +40,6 @@ def chck_to_delete(v, typ):
             pass
 
 
-def one_r_del(da):
-    with open(T, 'r') as file:
-        lines = [line.strip().split(',') for line in file.readlines()]
-    with open(T, 'w') as file:
-        for line in lines:
-            if line[0] != da:
-                file.write(f"{line[0]},{line[1]},{line[2]}\n")
-            else:
-                print(f'{line} deleted')
-
-
-def two_r_del(da, pr):
-    with open(T, 'r') as file:
-        lines = [line.strip().split(',') for line in file.readlines()]
-    with open(T, 'w') as file:
-        for line in lines:
-            if line[0] != da or float(line[1]) != pr:
-                file.write(f"{line[0]},{line[1]},{line[2]}\n")
-            else:
-                print(f'{line} deleted')
-
-
 def delete(da, de, pr):
     with open(T, 'r') as file:
         lines = [line.strip().split(',') for line in file.readlines()]
@@ -70,7 +48,7 @@ def delete(da, de, pr):
             if line[0] != da or float(line[1]) != pr or line[2] != de:
                 file.write(f"{line[0]},{line[1]},{line[2]}\n")
             else:
-                print(f'{line} deleted')
+                pass
 
 
 def del_all():
