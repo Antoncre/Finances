@@ -323,28 +323,32 @@ def lc():
 def check_for_changes():
     content = input_text.get('1.0', 'end-1c')
 
-    if not content and (what_to_do_text.get('1.0', 'end-1c') == 'Insert amount here:' or
+    if not content and (what_to_do_text.get('1.0', 'end-1c') == 'Insert price here:' or
                         what_to_do_text.get('1.0', 'end-1c') == 'Wprowadź kwotę:' or
                         what_to_do_text.get('1.0', 'end-1c') == 'Введіть суму:'):
         butt_stable.configure(state='disabled')
+        root.bind('<Return>', lambda event: empty_function())
 
-    elif content and (what_to_do_text.get('1.0', 'end-1c') == 'Insert amount here:' or
+    elif content and (what_to_do_text.get('1.0', 'end-1c') == 'Insert price here:' or
                       what_to_do_text.get('1.0', 'end-1c') == 'Wprowadź kwotę:' or
                       what_to_do_text.get('1.0', 'end-1c') == 'Введіть суму:'):
         try:
             float(content)
             butt_stable.configure(state='normal')
-            if content == '-0':
-                raise ValueError
+            root.bind('<Return>', lambda event: enter())
         except ValueError:
             butt_stable.configure(state='disabled')
+            root.bind('<Return>', lambda event: empty_function())
             try:
                 float(f"{content.split(',')[0]}.{content.split(',')[1]}")
                 butt_stable.configure(state='normal')
+                root.bind('<Return>', lambda event: enter())
             except ValueError:
                 butt_stable.configure(state='disabled')
+                root.bind('<Return>', lambda event: empty_function())
             except IndexError:
                 butt_stable.configure(state='disabled')
+                root.bind('<Return>', lambda event: empty_function())
 
     elif content and (what_to_do_text.get('1.0', 'end-1c') == 'Insert date here:' or
                       what_to_do_text.get('1.0', 'end-1c') == 'Wprowadź datę:' or
@@ -355,21 +359,38 @@ def check_for_changes():
                 float(content.split('-')[1])
                 float(content.split('-')[2])
                 butt_stable.configure(state='normal')
+                root.bind('<Return>', lambda event: enter())
 
             except IndexError:
                 butt_stable.configure(state='disabled')
+                root.bind('<Return>', lambda event: empty_function())
             except ValueError:
                 butt_stable.configure(state='disabled')
+                root.bind('<Return>', lambda event: empty_function())
         else:
             butt_stable.configure(state='disabled')
+            root.bind('<Return>', lambda event: empty_function())
 
     elif not content and (what_to_do_text.get('1.0', 'end-1c') == 'Insert date here:' or
                           what_to_do_text.get('1.0', 'end-1c') == 'Wprowadź datę:' or
                           what_to_do_text.get('1.0', 'end-1c') == 'Введіть дату:'):
         butt_stable.configure(state='normal')
+        root.bind('<Return>', lambda event: enter())
 
-    elif content and what_to_do_text.get('1.0', 'end-1c') != 'Check all info and press "Apply" or "Cancel"':
+    elif (what_to_do_text.get('1.0', 'end-1c') == 'Insert description here:' or
+          what_to_do_text.get('1.0', 'end-1c') == 'Wprowadź opis:' or
+          what_to_do_text.get('1.0', 'end-1c') == 'Введіть опис:'):
         butt_stable.configure(state='normal')
+        root.bind('<Return>', lambda event: enter())
+
+    elif (what_to_do_text.get('1.0', 'end-1c') == 'Check all info and press "Apply" or "Cancel"' or
+          what_to_do_text.get('1.0', 'end-1c') == 'Sprawdź wszystkie dane oraz kliknij "Potwierdź" lub "Anuluj"' or
+          what_to_do_text.get('1.0', 'end-1c') == 'Перевірте всі дані та натисніть "Підтвердити" або "Відмінити"'):
+        butt_stable.configure(state='disabled')
+        root.bind('<Return>', lambda event: empty_function())
+    else:
+        butt_stable.configure(state='disabled')
+        root.bind('<Return>', lambda event: empty_function())
 
 
 def button_func():
