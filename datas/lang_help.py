@@ -102,7 +102,7 @@ a)
     Приклади: «380»; «24,23»; «15.22»; «-2»; «-3.8».
     Числа без знаку вважаються за прибуток,
     а числа з мінусом перед, вважаються за витрату.
-    Після чого потрібно клацнути кнопку з символом «↲». 
+    Після чого потрібно клацнути кнопку з символом «↲» або натиснути ентер. 
     
     Увага! Кнопка не запрацює якщо вартість неправильна,
     поправте вартість та спробуйте ще раз.
@@ -112,7 +112,7 @@ b)
     Щоб ввести дату, потрібно ввести в текстовому полі (зелений фон) 
     дату відділену за допомогою тере, такий формат: РРРР-ММ-ДД 
     Приклади: «2000-02-29»; «1998-12-07»; «2022-01-13».
-    Після чого потрібно клацнути кнопку з символом «↲». 
+    Після чого потрібно клацнути кнопку з символом «↲» або натиснути ентер. 
     
     Увага! Кнопка не запрацює якщо вартість неправильна,
     поправте вартість та спробуйте ще раз.
@@ -121,7 +121,7 @@ c)
     
     Щоб ввести опис, потрібно ввести в текстовому полі (зелений фон) 
     свій опис. Приклади: «Потратив на базарі»; «Заробив»; «Найшов на дорозі».
-    Після чого потрібно клацнути кнопку з символом «↲». 
+    Після чого потрібно клацнути кнопку з символом «↲» або натиснути ентер. 
     
 d)
     
@@ -193,7 +193,7 @@ a)
     Przykłady: «48»; «24,23»; «15.22»; «-2»; «-3.8».
     Liczby bez znaku są uwzględniane jako przychód,
     a liczby z minusem przed, są uwzględniane jako wydatek.
-    Po czym należy kliknąć przycisk z symbolem '↲'. 
+    Po czym należy kliknąć przycisk z symbolem '↲' lub nacisnąć enter. 
     
     Uwaga! Przycisk nie zadziała jeśli wartość jest niepoprawna,
     popraw wartość i spróbuj ponownie.
@@ -203,7 +203,7 @@ b)
     Aby wprowadzić datę należy wpisać w polu tekstowym (zielony odcień tła) 
     datę oddzieloną myślnikami, format następujący: RRRR-MM-DD 
     Przykłady: «2000-02-29»; «1998-12-07»; «2022-01-13».
-    Po czym należy kliknąć przycisk z symbolem '↲'. 
+    Po czym należy kliknąć przycisk z symbolem '↲' lub nacisnąć enter. 
     
     Uwaga! Przycisk nie zadziała jeśli wartość jest niepoprawna,
     popraw wartośc i spróbuj ponownie.
@@ -212,7 +212,7 @@ c)
     
     Aby wprowadzić opis należy wpisać w polu tekstowym (zielony odcień tła) 
     dowolny opis. Przykłady: «Zakupy»; «Wypłata»; «Wygrana ze zdrapki».
-    Po czym należy kliknąć przycisk z symbolem '↲'. 
+    Po czym należy kliknąć przycisk z symbolem '↲' lub nacisnąć enter. 
     
 d)
     
@@ -284,7 +284,7 @@ a)
     Examples: «48»; «24,23»; «15.22»; «-2»; «-3.8».
     Numbers without a sign are taken as income,
     numbers with minus, are taken as expenses.
-    Then click on a button with the symbol of '↲'. 
+    Then click on a button with the symbol of '↲' or press enter. 
     
     Warning! The button won't work if a value is incorrect,
     correct the value and try again.
@@ -294,7 +294,7 @@ b)
     To insert date, type in text field (green background) a date 
     separated with dashes, following format: YYYY-MM-DD 
     Examples: «2000-02-29»; «1998-12-07»; «2022-01-13».
-    Then click on a button with the symbol of '↲'. 
+    Then click on a button with the symbol of '↲' or press enter. 
     
     Warning! The button won't work if a value is incorrect,
     correct the value and try again.
@@ -303,7 +303,7 @@ c)
     
     To insert description, type in text field (green background) 
     your description. Examples: «Shopping»; «Pension»; «A gift from friend».
-    Then click on a button with the symbol of '↲'. 
+    Then click on a button with the symbol of '↲' or press enter. 
     
 d)
     
