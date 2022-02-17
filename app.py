@@ -156,6 +156,10 @@ def pl():
         dates()
 
 
+def empty_function():
+    pass
+
+
 def add():
     a = []
     for el in datas.database.listing():
@@ -699,6 +703,7 @@ butt_stable.pack(side='bottom')
 
 root.bind('<Motion>', lambda event: check_for_changes())
 root.bind('<Button>', lambda event: check_for_changes())
+root.bind('<KeyPress>', lambda event: check_for_changes())
 
 if language == 'en':
     en()
