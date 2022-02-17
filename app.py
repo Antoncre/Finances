@@ -564,7 +564,7 @@ def enter():
                      what_to_do_text.get('1.0', f'{tk.END}-1c') == 'Wprowadź datę:' or
                      what_to_do_text.get('1.0', f'{tk.END}-1c') == 'Введіть дату:'):
         what_to_do_text.delete('1.0', tk.END)
-        if input_text.get('1.0', tk.END) == ('\n' or ''):
+        if input_text.get('1.0', f"{tk.END}-1c").strip() == '':
             date = now.strftime('%Y-%m-%d')
         else:
             date = input_text.get('1.0', f'{tk.END}-1c').replace('\n', '').strip()
