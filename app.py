@@ -8,8 +8,9 @@ import tkinter
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
-import datas.database, datas.lang_help
-
+from functools import partial
+import datas.database
+import datas.lang_help
 
 MONTHS = {
         "01": "January:",
@@ -426,6 +427,133 @@ def cancel_func():
     enter()
 
 
+def delete_items_func():
+    global deleting_item
+    deleting_item = 1
+    dict_to_this = {}
+    listy = []
+    delete_menu.entryconfig(0, state='disabled')
+    delete_menu.entryconfig(1, state='disabled')
+
+    d_root = tk.Tk()
+
+    d_root.geometry('1000x750')
+    d_root.title('Deleting items')
+    d_root.option_add('*tearOff', False)
+
+    def swap():
+        global deleting_item
+        deleting_item = 1
+        try:
+            delete_menu.entryconfig(0, state='normal')
+            delete_menu.entryconfig(1, state='normal')
+        except tk.TclError:
+            pass
+        d_root.destroy()
+
+    def chk_for_chan():
+        if len(listy) == 0:
+            del_selected.configure(state='disabled')
+        else:
+            del_selected.configure(state='normal')
+
+    def del_butt(li):
+        if len(li) == 0:
+            tk.messagebox.showinfo(title='Empty list', message="You haven't chosen any elements. Choose elements "
+                                                               "you want to delete, and only then press tis button")
+        else:
+            for e in li:
+                datas.database.delete(e[0], e[2], e[1])
+            text_field.configure(state='normal')
+            text_field.delete('1.0', tk.END)
+            text_field.configure(state='disabled')
+            try:
+                if with_dates:
+                    dates()
+                else:
+                    lc()
+            except tk.TclError:
+                pass
+            swap()
+
+    def inserting(d, p, ds, n):
+        if dict_to_this[n].instate(['selected']):
+            listy.append([d, p, ds])
+            text_field.configure(state='normal')
+            text_field.insert(tk.END, f"\n{n}. {ds}\n")
+            text_field.configure(state='disabled')
+        else:
+            listy.remove([d, p, ds])
+            text_field.configure(state='normal')
+            n_text = text_field.get('1.0', f'{tk.END}-1c').replace(f"\n{n}. {ds}\n", "")
+            text_field.delete('1.0', tk.END)
+            text_field.insert(tk.END, n_text)
+            text_field.configure(state='disabled')
+
+    def add_obj():
+        n = 0
+        for exp in datas.database.listing():
+
+            f_2f = "%.2f" % exp['price']
+            to_print_price = "%-9s" % f_2f
+            to_print_date = "%-10s" % exp['date']
+
+            p_inserting = partial(inserting, exp['date'], exp['price'], exp['description'], n)
+            dict_to_this[n] = ttk.Checkbutton(new_frame, text=f"{to_print_date}  {to_print_price}"
+                                                              f"  {exp['description']}\n",
+                                                              command=p_inserting)
+            n += 1
+
+    if language == 'ua':
+        dels = 'Видвлити вибрані елементи'
+        label = 'Вибрані елементи:'
+    elif language == 'pl':
+        dels = 'Usuń wybrane elementy'
+        label = 'Wybrane elementy:'
+    elif language == 'en':
+        dels = 'Delete selected items'
+        label = 'Selected items:'
+    else:
+        dels = 'Usuń wybrane elementy'
+        label = 'Wybrane elementy:'
+
+    par = partial(del_butt, listy)
+
+    d_frame = tk.Frame(d_root)
+    canvas = tk.Canvas(d_frame, bg="#D7D9D6")
+    text_field = tk.Text(d_frame, width='50', height='25', wrap='word', bg="#4A4747", fg='white')
+    del_selected = tk.Button(d_frame, width='20', height='10', text=dels, bg='#CF5828', fg='white', command=par)
+    new_frame = tk.Frame(canvas)
+    label_selected = tk.Label(d_frame, text=label)
+
+    additional_scrollbar = ttk.Scrollbar(d_frame, orient='vertical', command=canvas.yview)
+    canvas.configure(yscrollcommand=additional_scrollbar.set)
+    canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox('all')))
+    d_frame.pack(expand=True, fill='both')
+    additional_scrollbar.pack(side='left', fill='y')
+    canvas.pack(side='left', expand=True, fill='both')
+    canvas.create_window((0, 0), anchor='w', window=new_frame, width='700')
+
+    label_selected.pack(side='top', fill='x')
+
+    text_field.pack(side='top', fill='both', expand=True)
+
+    del_selected.pack(side='top', fill='both')
+    add_obj()
+
+    for ob in dict_to_this.values():
+        ob.pack(side='top', fill='x')
+
+    text_field.tag_configure('center', justify='center')
+    text_field.tag_add('center', 1.0, 'end')
+
+    text_field.configure(state='disabled')
+
+    d_root.bind('<Motion>', lambda event: chk_for_chan())
+
+    d_root.protocol('WM_DELETE_WINDOW', swap)
+
+
 def delete_all_func():
     if language == 'en':
         first = tk.messagebox.askokcancel(title="Deleting all elements", message="Are you sure you want "
@@ -527,11 +655,15 @@ def enter():
         what_to_do_text.delete('1.0', tk.END)
         content = input_text.get('1.0', f"{tk.END}-1c")
         try:
-            price = float(f"{content.split(',')[0]}.{content.split(',')[1]}")
+            try:
+                prontent = content.split('\n')[0] + content.split('\n')[1]
+                price = float(f"{prontent.split(',')[0]}.{prontent.split(',')[1]}")
+            except IndexError:
+                price = float(f"{content.split(',')[0]}.{content.split(',')[1]}")
         except ValueError:
-            price = float(content)
+            price = float(content.split('\n')[0] + content.split('\n')[1])
         except IndexError:
-            price = float(content)
+            price = float(content.split('\n')[0] + content.split('\n')[1])
         if price >= 0:
             if language == 'en':
                 confirmation_text.insert(tkinter.END, f'Amount:\n\n{price:.2f}\n\n', 'plus')
@@ -670,17 +802,18 @@ el_view_menu.add_command(label="Anton's Arrange", command=lc)
 lang_menu.add_command(label='English', command=en)
 lang_menu.add_command(label='Polski', command=pl)
 lang_menu.add_command(label='Українська', command=ua)
+delete_menu.add_command(label='Delete Items', command=delete_items_func)
 delete_menu.add_command(label='Delete All ❗❗❗', command=delete_all_func)
 help_menu.add_command(label='About App', command=help_info)
 help_menu.add_command(label='How To Use', command=help_usage)
 
 
-display_text = tk.Text(frame, height='15', width='93', bg='#4A4747', cursor='arrow', wrap='word')
-confirmation_text = tk.Text(frame, height='20', width='30', bg='#4A4747', wrap='word', cursor='arrow')
+display_text = tk.Text(frame, height='15', width='93', bg='#4A4747', fg='white', cursor='arrow', wrap='word')
+confirmation_text = tk.Text(frame, height='20', width='30', bg='#4A4747', fg='white', wrap='word', cursor='arrow')
 what_to_do_text = tk.Text(frame, height='3', width='20', bg='#4A4747', fg='white', wrap='word', cursor='arrow')
 button = tk.Button(frame, text='Apply', height='4', bg='green', width=9, command=button_func, cursor='plus')
 cancel = tk.Button(frame, text='Cancel', height='4', bg='red', width=9, command=cancel_func, cursor='pirate')
-input_text = tk.Text(frame, height='10', width='20', bg='#3A413A', cursor='arrow')
+input_text = tk.Text(frame, height='10', width='20', bg='#3A413A', fg='white', cursor='arrow')
 butt_stable = tk.Button(input_text, height='3', text='↲', bg='#3A413A', command=enter, cursor='heart')
 
 what_to_do_text.insert(tkinter.END, 'Insert amount here:')
