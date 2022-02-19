@@ -6,10 +6,10 @@ from datetime import datetime
 from operator import itemgetter
 
 T = "Transactions.csv"
-now = datetime.now()
+naive_now = datetime.now()
 
 
-def new(p, ds, d=now.strftime('%Y-%m-%d')):
+def new(p, ds, d=naive_now.strftime('%Y-%m-%d')):
     with open(T, 'a') as file:
         file.write(f"{d},{p},{ds}\n")
 
@@ -56,14 +56,14 @@ def del_all():
         pass
 
 
-def sort(r):
+def sort(r, tye):
     """this is supposed to execute save all y,m,d one by one"""
-    sortered = sorting(r)
+    sortered = sorting(r, tye)
     with open(T, 'w') as file:
         for e in sortered:
             file.write(f"{e['date']},{e['price']},{e['description']}\n")
 
 
-def sorting(al):
-    al.sort(key=itemgetter('date'))
+def sorting(al, tye):
+    al.sort(key=itemgetter(tye))
     return al
