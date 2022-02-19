@@ -79,8 +79,8 @@ hu_ua = """
 1.
 
     Варто пам'ятати що на кожному етапі вводу можна скористуватись кнопкою
-    «Відмінити» щоб відмінити увесь процесс вводу нового елементу,
-    що спричинить видалення усіх введених раніше даних.
+    «Відмінити» або натиснути клавіш «Esc» щоб відмінити увесь процесс 
+    вводу нового елементу, що спричинить видалення усіх введених раніше даних.
 
 a)
 
@@ -117,12 +117,12 @@ a)
     клацаємо кнопку «Підтвердити».
 
 2. 
-    Щоб змінити вигляд структури списку клацаємо символ «⧫» на панелі меню 
+    Щоб змінити вигляд структури списку клацаємо «Сортування» на панелі меню 
     в лівому верхньому кутку, після чого вибираємо «Датовано» 
     або «Структура Антона». Структура за умовчанням «Датовано».
 
 3.
-    Щоб змінити мову клацаємо символ «⨁» на панелі меню 
+    Щоб змінити мову клацаємо «Мова» на панелі меню 
     в лівому верхньому кутку та вибираємо потрібну нам мову.
 
     Увага! Мову потрібно змінити перед вводом даних,
@@ -131,12 +131,12 @@ a)
 
 4.
 
-а)  Шоб видалити вибрані елементи зі списку клацаємо символ «⨂» на панелі 
+а)  Шоб видалити вибрані елементи зі списку клацаємо «Видалення» на панелі 
     меню в лівому верхньому кутку та вибираємо «Видалити Елементи» 
     після чого зазначуємо квадратики біля елементів які хочемо видалити
     та натискаємо кнопку «Видалити вибрані елементи». 
    
-б)  Шоб видалити всі елементи зі списку клацаємо символ «⨂» на панелі меню 
+б)  Шоб видалити всі елементи зі списку клацаємо «Видалення» на панелі меню 
     в лівому верхньому кутку та вибираємо «Видалити Все ❗❗❗» після чого 
     підтверджуємо що хочемо видалити всі елементи клацаючи кнопку «ok».
     
@@ -161,8 +161,9 @@ hu_pl = """
 1.
 
     Warto zaznaczyć że na każdym etapie wpisywania możemy skorzystać
-    z przycisku 'Anuluj' w celu anulowania całego procesu wpisywania
-    nowego elementu, co usunie podane wcześniej dane.
+    z przycisku 'Anuluj' lub nacisnąć klawisz «Esc» w celu anulowania
+    całego procesu wpisywania nowego elementu, 
+    co usunie podane wcześniej dane.
 
 a)
 
@@ -199,12 +200,12 @@ d)
     klikamy przycisk 'Potwierdź'.
 
 2. 
-    W celu zmiany układu wyświetlania listy klikamy symbol '⧫' na panelu menu 
+    W celu zmiany układu wyświetlania listy klikamy 'Sortowanie' na panelu menu 
     w lewym górnym rogu, po czym wybieramy 'Według Daty' lub 'Układ Antona'.
     Układ domyślny to 'Według Daty'.
 
 3.
-    Aby zmienić język należy kliknąć symbol '⨁' na panelu menu
+    Aby zmienić język należy kliknąć 'Język' na panelu menu
     w lewym górnym rogu i wybrać język aplikacji na który chcielibyśmy zmienić.
 
     Uwaga! Język należy zmienić zanim zaczniemy wprowadzać dane,
@@ -214,14 +215,14 @@ d)
 4.
   
 a)  
-    Aby usunąć wybrane elementy z listy klikamy symbol '⨂' na panelu menu
+    Aby usunąć wybrane elementy z listy klikamy 'Usuwanie' na panelu menu
     w lewym górnym rogu i wybieramy 'Usuń elementy' po czym zaznaczamy 
     kwadraciki obok elementów które chcemy usunąć i klikamy przycisk 
     'Usuń wybrane elementy'.
     
 b)
-    Aby usunąć wszystkie elementy z listy klikamy symbol '⨂' na panelu menu
-    w lewym górnym rogu i wybieramy 'Usuń wszystko ❗❗❗' po czym 
+    Aby usunąć wszystkie elementy z listy klikamy symbol 'Usuwanie' 
+    na panelu menu w lewym górnym rogu i wybieramy 'Usuń wszystko ❗❗❗' po czym 
     zatwierdzamy że chcemy usunąć wszystkie elementy klikając przycisk 'ok'.
     
     
@@ -245,8 +246,9 @@ hu_en = """
 1.
 
     It's important to remember that on every step of inserting we can click
-    'Cancel' to cancel whole operation of creating new element,
-    that will erase data typed earlier and allow us to start again.
+    'Cancel' or press «Esc» button to cancel whole 
+    operation of creating new element, that will erase 
+    data typed earlier and allow us to start again.
 
 a)
 
@@ -283,12 +285,12 @@ d)
     click button 'Apply'.
     
 2. 
-    In order to change view of a list click a symbol of '⧫' on menu panel
+    In order to change view of a list click 'Sort' on menu panel
     on upper - left corner, and choose 'Dated' or 'Anton's Arrange'.
     The default is 'Dated'.
 
 3.
-    In order to change language click a symbol of '⨁' on menu panel on
+    In order to change language click 'Language' on menu panel on
     upper - left corner and choose program's language that you want.
 
     Warning! Change the language before inserting data,
@@ -299,13 +301,13 @@ d)
 
 a)  
     In order to delete chosen elements from a list  
-    click a symbol of «⨂» on menu panel on upper - left corner
+    click «Delete» on menu panel on upper - left corner
     and choose 'Delete Items' then check checkboxes of elements
     you want to delete and click 'Delete selected items'.
 
 b)
     In order to delete all of the elements from a list  
-    click a symbol of «⨂» on menu panel on upper - left corner
+    click «Delete» on menu panel on upper - left corner
     and choose 'Delete All ❗❗❗' then confirm it by clicking 'ok'.
     
     
