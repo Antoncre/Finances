@@ -32,6 +32,7 @@ now = datetime.now()
 view = 0
 price = ''
 date = ''
+tye = 'date'
 description = ''
 can_do = 1
 with_dates = 1
@@ -61,8 +62,13 @@ def en():
     root.title('Finances app')
     button.config(text='Apply')
     cancel.config(text='Cancel')
+    menubar.entryconfigure(0, label='Sort')
+    menubar.entryconfigure(1, label='Language')
+    menubar.entryconfigure(2, label='Delete')
+    menubar.entryconfigure(3, label='Help')
     el_view_menu.entryconfig(0, label='Dated')
     el_view_menu.entryconfig(1, label="Anton's Arrange")
+    el_view_menu.entryconfig(2, label="By Price")
     help_menu.entryconfig(0, label='About App')
     help_menu.entryconfig(1, label='How To Use')
     delete_menu.entryconfig(0, label='Delete Items')
@@ -100,8 +106,13 @@ def ua():
     root.title('Фінансова програма')
     button.config(text='Підтвердити')
     cancel.config(text='Відмінити')
+    menubar.entryconfigure(0, label='Сортування')
+    menubar.entryconfigure(1, label='Мова')
+    menubar.entryconfigure(2, label='Видалення')
+    menubar.entryconfigure(3, label='Довідка')
     el_view_menu.entryconfig(0, label='Датовано')
     el_view_menu.entryconfig(1, label='Структура Антона')
+    el_view_menu.entryconfig(2, label='За Вартістю')
     help_menu.entryconfig(0, label='Про Программу')
     help_menu.entryconfig(1, label='Користування')
     delete_menu.entryconfig(0, label='Видалити Елементи')
@@ -139,8 +150,13 @@ def pl():
     root.title('Aplikacja finansowa')
     button.config(text='Potwierdź')
     cancel.config(text='Anuluj')
+    menubar.entryconfigure(0, label='Sortowanie')
+    menubar.entryconfigure(1, label='Język')
+    menubar.entryconfigure(2, label='Usuwanie')
+    menubar.entryconfigure(3, label='Pomoc')
     el_view_menu.entryconfig(0, label='Według Daty')
     el_view_menu.entryconfig(1, label='Układ Antona')
+    el_view_menu.entryconfig(2, label='Według Wartości')
     help_menu.entryconfig(0, label='O Aplikacji')
     help_menu.entryconfig(1, label='Korzystanie')
     delete_menu.entryconfig(0, label='Usuń elementy')
@@ -170,7 +186,7 @@ def add():
 
 def srt():
     r = datas.database.listing()
-    datas.database.sort(r)
+    datas.database.sort(r, tye)
 
 
 def os():
@@ -189,7 +205,8 @@ def os():
 
 
 def dates():
-    global with_dates, h_info, h_to_use
+    global with_dates, h_info, h_to_use, tye
+    tye = 'date'
     os()
     with_dates = 1
     h_to_use = 0
@@ -214,8 +231,37 @@ def dates():
     display_text.configure(state='disabled')
 
 
+def pr():
+    pass
+    global tye, with_dates
+    tye = 'price'
+    srt()
+    os()
+    with_dates = 1
+    for exp in datas.database.listing():
+        f_2f = "%.2f" % exp['price']
+        to_print_price = "%-9s" % f_2f
+        to_print_date = "%-10s" % exp['date']
+        if float(f_2f) < 0:
+            display_text.insert(tk.END, f"{to_print_price} {to_print_date} {exp['description']}\n", 'minus')
+        else:
+            display_text.insert(tk.END, f" {to_print_price} {to_print_date} {exp['description']}\n", 'plus')
+    if language == 'en':
+        display_text.insert(tk.END, f"\nTotal: {add()}")
+    elif language == 'pl':
+        display_text.insert(tk.END, f"\nŁącznie: {add()}")
+    elif language == 'ua':
+        display_text.insert(tk.END, f"\nЗагалом: {add()}")
+    else:
+        display_text.insert(tk.END, f"\nTotal: {add()}")
+    display_text.see(tk.END)
+    display_text.configure(state='disabled')
+
+
+
 def lc():
-    global with_dates, language, h_info, h_to_use
+    global with_dates, language, h_info, h_to_use, tye
+    tye = 'date'
     os()
     with_dates = 0
     h_to_use = 0
@@ -361,10 +407,14 @@ def check_for_changes():
         if not content.split('-')[3:]:
             try:
                 float(content.split('-')[0])
-                float(content.split('-')[1])
-                float(content.split('-')[2])
-                butt_stable.configure(state='normal')
-                root.bind('<Return>', lambda event: enter())
+                one = float(content.split('-')[1])
+                two = float(content.split('-')[2])
+                if one <= 12 and two <= 31:
+                    butt_stable.configure(state='normal')
+                    root.bind('<Return>', lambda event: enter())
+                else:
+                    butt_stable.configure(state='disabled')
+                    root.bind('<Return>', lambda event: empty_function())
 
             except IndexError:
                 butt_stable.configure(state='disabled')
@@ -420,9 +470,9 @@ def cancel_func():
     what_to_do_text.delete('1.0', tkinter.END)
     confirmation_text.delete('1.0', tkinter.END)
     input_text.delete('1.0', tkinter.END)
-    confirmation_text.configure(state='disable')
-    what_to_do_text.configure(state='disable')
-    butt_stable.configure(state='normal')
+    confirmation_text.configure(state='disabled')
+    what_to_do_text.configure(state='disabled')
+    butt_stable.configure(state='disabled')
     can_do = 0
     enter()
 
@@ -438,7 +488,16 @@ def delete_items_func():
     d_root = tk.Tk()
 
     d_root.geometry('1000x750')
-    d_root.title('Deleting items')
+
+    if language == 'ua':
+        d_root.title('Видалення елементів')
+    elif language == 'pl':
+        d_root.title('Usuwanie elementów')
+    elif language == 'en':
+        d_root.title('Deleting items')
+    else:
+        d_root.title('Usuwanie elementów')
+
     d_root.option_add('*tearOff', False)
 
     def swap():
@@ -522,9 +581,10 @@ def delete_items_func():
     d_frame = tk.Frame(d_root)
     canvas = tk.Canvas(d_frame, bg="#D7D9D6")
     text_field = tk.Text(d_frame, width='50', height='25', wrap='word', bg="#4A4747", fg='white')
-    del_selected = tk.Button(d_frame, width='20', height='10', text=dels, bg='#CF5828', fg='white', command=par)
+    del_selected = tk.Button(d_frame, width='50', height='10', text=dels, bg='#CF5828', fg='white', command=par)
     new_frame = tk.Frame(canvas)
     label_selected = tk.Label(d_frame, text=label)
+    del_scrollbar = tk.Scrollbar(text_field, orient="vertical", width='7', command=text_field.yview, cursor='arrow')
 
     additional_scrollbar = ttk.Scrollbar(d_frame, orient='vertical', command=canvas.yview)
     canvas.configure(yscrollcommand=additional_scrollbar.set)
@@ -537,6 +597,7 @@ def delete_items_func():
     label_selected.pack(side='top', fill='x')
 
     text_field.pack(side='top', fill='both', expand=True)
+    del_scrollbar.pack(side='right', expand=False, fill='y')
 
     del_selected.pack(side='top', fill='both')
     add_obj()
@@ -544,6 +605,7 @@ def delete_items_func():
     for ob in dict_to_this.values():
         ob.pack(side='top', fill='x')
 
+    text_field["yscrollcommand"] = del_scrollbar.set
     text_field.tag_configure('center', justify='center')
     text_field.tag_add('center', 1.0, 'end')
 
@@ -649,48 +711,51 @@ def enter():
     confirmation_text.tag_config('minus', foreground='#F15C20')
     confirmation_text.tag_config('plus', foreground='#57D233')
 
-    if can_do and (what_to_do_text.get('1.0', f'{tk.END}-1c') == 'Insert amount here:' or
+    if can_do and (what_to_do_text.get('1.0', f'{tk.END}-1c') == 'Insert price here:' or
                    what_to_do_text.get('1.0', f'{tk.END}-1c') == 'Wprowadź kwotę:' or
                    what_to_do_text.get('1.0', f'{tk.END}-1c') == 'Введіть суму:'):
         what_to_do_text.delete('1.0', tk.END)
-        content = input_text.get('1.0', f"{tk.END}-1c")
+        content = input_text.get('1.0', f"{tk.END}-1c").strip()
         try:
+            prontent = content.split('\n')[0] + content.split('\n')[1]
+            price = float(f"{prontent.split(',')[0]}.{prontent.split(',')[1]}")
+        except IndexError:
             try:
                 prontent = content.split('\n')[0] + content.split('\n')[1]
-                price = float(f"{prontent.split(',')[0]}.{prontent.split(',')[1]}")
+                price = float(prontent)
             except IndexError:
-                price = float(f"{content.split(',')[0]}.{content.split(',')[1]}")
-        except ValueError:
-            price = float(content.split('\n')[0] + content.split('\n')[1])
-        except IndexError:
-            price = float(content.split('\n')[0] + content.split('\n')[1])
-        if price >= 0:
+                try:
+                    price = float(f"{content.split(',')[0]}.{content.split(',')[1]}")
+                except IndexError:
+                    price = float(content)
+
+        if price > 0:
             if language == 'en':
-                confirmation_text.insert(tkinter.END, f'Amount:\n\n{price:.2f}\n\n', 'plus')
+                confirmation_text.insert(tk.END, f'Price:\n\n{price:.2f}\n\n', 'plus')
             elif language == 'pl':
-                confirmation_text.insert(tkinter.END, f'Kwota:\n\n{price:.2f}\n\n', 'plus')
+                confirmation_text.insert(tk.END, f'Kwota:\n\n{price:.2f}\n\n', 'plus')
             elif language == 'ua':
-                confirmation_text.insert(tkinter.END, f'Сума:\n\n{price:.2f}\n\n', 'plus')
+                confirmation_text.insert(tk.END, f'Сума:\n\n{price:.2f}\n\n', 'plus')
             else:
-                confirmation_text.insert(tkinter.END, f'Amount:\n\n{price:.2f}\n\n', 'plus')
+                confirmation_text.insert(tk.END, f'Price:\n\n{price:.2f}\n\n', 'plus')
         else:
             if language == 'en':
-                confirmation_text.insert(tkinter.END, f'Amount:\n\n{price:.2f}\n\n', 'minus')
+                confirmation_text.insert(tk.END, f'Price:\n\n{price:.2f}\n\n', 'minus')
             elif language == 'pl':
-                confirmation_text.insert(tkinter.END, f'Kwota:\n\n{price:.2f}\n\n', 'minus')
+                confirmation_text.insert(tk.END, f'Kwota:\n\n{price:.2f}\n\n', 'minus')
             elif language == 'ua':
-                confirmation_text.insert(tkinter.END, f'Сума:\n\n{price:.2f}\n\n', 'minus')
+                confirmation_text.insert(tk.END, f'Сума:\n\n{price:.2f}\n\n', 'minus')
             else:
-                confirmation_text.insert(tkinter.END, f'Amount:\n\n{price:.2f}\n\n', 'minus')
+                confirmation_text.insert(tk.END, f'Price:\n\n{price:.2f}\n\n', 'minus')
 
         if language == 'en':
-            what_to_do_text.insert(tkinter.END, 'Insert date here:')
+            what_to_do_text.insert(tk.END, 'Insert date here:')
         elif language == 'pl':
-            what_to_do_text.insert(tkinter.END, 'Wprowadź datę:')
+            what_to_do_text.insert(tk.END, 'Wprowadź datę:')
         elif language == 'ua':
-            what_to_do_text.insert(tkinter.END, 'Введіть дату:')
+            what_to_do_text.insert(tk.END, 'Введіть дату:')
         else:
-            what_to_do_text.insert(tkinter.END, 'Insert date here:')
+            what_to_do_text.insert(tk.END, 'Insert date here:')
 
     elif can_do and (what_to_do_text.get('1.0', f'{tk.END}-1c') == 'Insert date here:' or
                      what_to_do_text.get('1.0', f'{tk.END}-1c') == 'Wprowadź datę:' or
@@ -699,20 +764,26 @@ def enter():
         if input_text.get('1.0', f"{tk.END}-1c").strip() == '':
             date = now.strftime('%Y-%m-%d')
         else:
-            date = input_text.get('1.0', f'{tk.END}-1c').replace('\n', '').strip()
+            try:
+                to_date = input_text.get('1.0', f'{tk.END}-1c').replace('\n', '').strip().split()
+                string_date = ''.join(to_date)
+                date = f"{int(string_date.split('-')[0]):04d}-{int(string_date.split('-')[1]):02d}-" \
+                       f"{int(string_date.split('-')[2]):02d}"
+            except IndexError:
+                date = input_text.get('1.0', f'{tk.END}-1c').strip()
 
         if language == 'en':
-            confirmation_text.insert(tkinter.END, f'Date:\n\n{date}\n\n')
-            what_to_do_text.insert(tkinter.END, 'Insert description here:')
+            confirmation_text.insert(tk.END, f'Date:\n\n{date}\n\n')
+            what_to_do_text.insert(tk.END, 'Insert description here:')
         elif language == 'pl':
-            confirmation_text.insert(tkinter.END, f'Data:\n\n{date}\n\n')
-            what_to_do_text.insert(tkinter.END, 'Wprowadź opis:')
+            confirmation_text.insert(tk.END, f'Data:\n\n{date}\n\n')
+            what_to_do_text.insert(tk.END, 'Wprowadź opis:')
         elif language == 'ua':
-            confirmation_text.insert(tkinter.END, f'Дата:\n\n{date}\n\n')
-            what_to_do_text.insert(tkinter.END, 'Введіть опис:')
+            confirmation_text.insert(tk.END, f'Дата:\n\n{date}\n\n')
+            what_to_do_text.insert(tk.END, 'Введіть опис:')
         else:
-            confirmation_text.insert(tkinter.END, f'Date:\n\n{date}\n\n')
-            what_to_do_text.insert(tkinter.END, 'Insert description here:')
+            confirmation_text.insert(tk.END, f'Date:\n\n{date}\n\n')
+            what_to_do_text.insert(tk.END, 'Insert description here:')
 
     elif can_do and (what_to_do_text.get('1.0', f'{tk.END}-1c') == 'Insert description here:' or
                      what_to_do_text.get('1.0', f'{tk.END}-1c') == 'Wprowadź opis:' or
@@ -726,24 +797,24 @@ def enter():
             for e in inside:
                 new_inside += f'{e}⸥'
             description = new_inside.strip('⸥')
-
+            root.bind('<Return>', lambda event: empty_function())
         except IndexError:
             description = input_text.get('1.0', f'{tk.END}-1c').replace('\n', '').strip()
-
+            root.bind('<Return>', lambda event: empty_function())
         if language == 'en':
-            confirmation_text.insert(tkinter.END, f'Description:\n\n{description}\n\n')
-            what_to_do_text.insert(tkinter.END, 'Check all info and press "Apply" or "Cancel"')
+            confirmation_text.insert(tk.END, f'Description:\n\n{description}\n\n')
+            what_to_do_text.insert(tk.END, 'Check all info and press "Apply" or "Cancel"')
         elif language == 'pl':
-            confirmation_text.insert(tkinter.END, f'Opis:\n\n{description}\n\n')
-            what_to_do_text.insert(tkinter.END, 'Sprawdź wszystkie dane oraz kliknij "Potwierdź" lub "Anuluj"')
+            confirmation_text.insert(tk.END, f'Opis:\n\n{description}\n\n')
+            what_to_do_text.insert(tk.END, 'Sprawdź wszystkie dane oraz kliknij "Potwierdź" lub "Anuluj"')
         elif language == 'ua':
-            confirmation_text.insert(tkinter.END, f'Опис:\n\n{description}\n\n')
-            what_to_do_text.insert(tkinter.END, 'Перевірте всі дані та натисніть "Підтвердити" або "Відмінити"')
+            confirmation_text.insert(tk.END, f'Опис:\n\n{description}\n\n')
+            what_to_do_text.insert(tk.END, 'Перевірте всі дані та натисніть "Підтвердити" або "Відмінити"')
         else:
-            confirmation_text.insert(tkinter.END, f'Description:\n\n{description}\n\n')
-            what_to_do_text.insert(tkinter.END, 'Check all info and press "Apply" or "Cancel"')
+            confirmation_text.insert(tk.END, f'Description:\n\n{description}\n\n')
+            what_to_do_text.insert(tk.END, 'Check all info and press "Apply" or "Cancel"')
 
-        input_text.delete('1.0', tkinter.END)
+        input_text.delete('1.0', tk.END)
         input_text.configure(state='disabled')
         butt_stable.configure(state='disabled')
         button.configure(state='normal')
@@ -752,20 +823,21 @@ def enter():
         input_text.configure(state='normal')
         what_to_do_text.delete('1.0', tk.END)
         if language == 'en':
-            what_to_do_text.insert(tkinter.END, 'Insert amount here:')
+            what_to_do_text.insert(tk.END, 'Insert price here:')
         elif language == 'pl':
-            what_to_do_text.insert(tkinter.END, 'Wprowadź kwotę:')
+            what_to_do_text.insert(tk.END, 'Wprowadź kwotę:')
         elif language == 'ua':
-            what_to_do_text.insert(tkinter.END, 'Введіть суму:')
+            what_to_do_text.insert(tk.END, 'Введіть суму:')
         else:
-            what_to_do_text.insert(tkinter.END, 'Insert amount here:')
+            what_to_do_text.insert(tk.END, 'Insert price here:')
+        root.bind('<Return>', lambda event: empty_function())
         button.configure(state='disabled')
         can_do = 1
 
     what_to_do_text.tag_configure('center', justify='center')
     confirmation_text.tag_configure('center', justify='center')
 
-    input_text.delete('1.0', tkinter.END)
+    input_text.delete('1.0', tk.END)
 
     what_to_do_text.tag_add('center', 1.0, 'end')
     confirmation_text.tag_add('center', 1.0, 'end')
@@ -775,7 +847,7 @@ def enter():
 
 
 root = tk.Tk()
-root.geometry('1130x800')
+root.geometry('1130x700')
 root.title('Finances app')
 root.option_add('*tearOff', False)
 
@@ -792,13 +864,14 @@ help_menu = tk.Menu(menubar)
 delete_menu = tk.Menu(menubar)
 
 
-menubar.add_cascade(menu=el_view_menu, label="⧫")
-menubar.add_cascade(menu=lang_menu, label="⨁")
-menubar.add_cascade(menu=delete_menu, label='⨂')
-menubar.add_cascade(menu=help_menu, label='?')
+menubar.add_cascade(menu=el_view_menu, label="Sort")
+menubar.add_cascade(menu=lang_menu, label="Language")
+menubar.add_cascade(menu=delete_menu, label='Delete')
+menubar.add_cascade(menu=help_menu, label='Help')
 
 el_view_menu.add_command(label='Dated', command=dates)
 el_view_menu.add_command(label="Anton's Arrange", command=lc)
+el_view_menu.add_command(label="By Price", command=pr)
 lang_menu.add_command(label='English', command=en)
 lang_menu.add_command(label='Polski', command=pl)
 lang_menu.add_command(label='Українська', command=ua)
@@ -809,12 +882,13 @@ help_menu.add_command(label='How To Use', command=help_usage)
 
 
 display_text = tk.Text(frame, height='15', width='93', bg='#4A4747', fg='white', cursor='arrow', wrap='word')
-confirmation_text = tk.Text(frame, height='20', width='30', bg='#4A4747', fg='white', wrap='word', cursor='arrow')
+confirmation_text = tk.Text(frame, height='15', width='30', bg='#4A4747', fg='white', wrap='word', cursor='arrow')
 what_to_do_text = tk.Text(frame, height='3', width='20', bg='#4A4747', fg='white', wrap='word', cursor='arrow')
-button = tk.Button(frame, text='Apply', height='4', bg='green', width=9, command=button_func, cursor='plus')
-cancel = tk.Button(frame, text='Cancel', height='4', bg='red', width=9, command=cancel_func, cursor='pirate')
-input_text = tk.Text(frame, height='10', width='20', bg='#3A413A', fg='white', cursor='arrow')
-butt_stable = tk.Button(input_text, height='3', text='↲', bg='#3A413A', command=enter, cursor='heart')
+button = tk.Button(frame, text='Apply', height='4', bg='green', width=9, command=button_func, cursor='arrow')
+cancel = tk.Button(frame, text='Cancel', height='4', bg='red', width=9, command=cancel_func, cursor='arrow')
+input_text = tk.Text(frame, height='15', width='20', bg='#3A413A', fg='white', cursor='arrow')
+butt_stable = tk.Button(input_text, height='3', text='↲', bg='#3A413A', command=enter, cursor='arrow')
+my_scrollbar = tk.Scrollbar(frame, orient="vertical", width='7', command=display_text.yview)
 
 what_to_do_text.insert(tkinter.END, 'Insert amount here:')
 what_to_do_text.tag_configure('center', justify='center')
@@ -825,6 +899,7 @@ display_text.configure(state='disabled')
 confirmation_text.configure(state='disabled')
 button.configure(state='disabled')
 
+my_scrollbar.pack(side='left', expand=False, fill='y')
 display_text.pack(side='left', expand=True, fill='both')
 confirmation_text.pack(side='top', expand=True, fill='both')
 input_text.pack(side='bottom', expand=True, fill='both')
@@ -833,10 +908,12 @@ what_to_do_text.pack(side='left', expand=True, fill='both')
 button.pack(side='right')
 butt_stable.pack(side='bottom')
 
+display_text["yscrollcommand"] = my_scrollbar.set
 
 root.bind('<Motion>', lambda event: check_for_changes())
 root.bind('<Button>', lambda event: check_for_changes())
 root.bind('<KeyPress>', lambda event: check_for_changes())
+root.bind('<Escape>', lambda event: cancel_func())
 
 if language == 'en':
     en()
