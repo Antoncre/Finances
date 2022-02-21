@@ -61,12 +61,19 @@ def del_all():
 def ch_categories() -> list:
     with open(C, 'r') as file:
         categories = file.read().strip().split(',')
-        for e in categories:
-            try:
-                open(f'datas/{e}.csv', 'x')
-            except FileExistsError:
-                pass
+        if categories == ['']:
+            pass
+        else:
+            for e in categories:
+                try:
+                    open(f'datas/{e}.csv', 'x')
+                except FileExistsError:
+                    pass
     return categories
+
+
+def category_addition(c):
+    pass
 
 
 def new_category(c):
