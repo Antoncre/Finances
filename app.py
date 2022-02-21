@@ -37,6 +37,10 @@ description = ''
 can_do = 1
 with_dates = 1
 deleting_item = 0
+add_category = 0
+add_to_category = 0
+delete_category = 0
+delete_from_category = 0
 h_info = 0
 h_to_use = 0
 
@@ -66,6 +70,7 @@ def en():
     menubar.entryconfigure(1, label='Language')
     menubar.entryconfigure(2, label='Delete')
     menubar.entryconfigure(3, label='Help')
+    menubar.entryconfigure(4, label='Categories')
     el_view_menu.entryconfig(0, label='Dated')
     el_view_menu.entryconfig(1, label="Anton's Arrange")
     el_view_menu.entryconfig(2, label="By Price")
@@ -73,6 +78,10 @@ def en():
     help_menu.entryconfig(1, label='How To Use')
     delete_menu.entryconfig(0, label='Delete Items')
     delete_menu.entryconfig(1, label='Delete All ❗❗❗')
+    categories_menu.entryconfig(0, label='+new category+')
+    categories_menu.entryconfig(1, label='+add to category')
+    categories_menu.entryconfig(2, label='-delete category-')
+    categories_menu.entryconfig(3, label='-delete from category')
     if with_dates and not h_info and not h_to_use:
         dates()
     elif not with_dates and not h_info and not h_to_use:
@@ -110,6 +119,7 @@ def ua():
     menubar.entryconfigure(1, label='Мова')
     menubar.entryconfigure(2, label='Видалення')
     menubar.entryconfigure(3, label='Довідка')
+    menubar.entryconfigure(4, label='Категорії')
     el_view_menu.entryconfig(0, label='Датовано')
     el_view_menu.entryconfig(1, label='Структура Антона')
     el_view_menu.entryconfig(2, label='За Вартістю')
@@ -117,6 +127,10 @@ def ua():
     help_menu.entryconfig(1, label='Користування')
     delete_menu.entryconfig(0, label='Видалити Елементи')
     delete_menu.entryconfig(1, label='Видалити Все ❗❗❗')
+    categories_menu.entryconfig(0, label='+нова категорія+')
+    categories_menu.entryconfig(1, label='+додати до категорії')
+    categories_menu.entryconfig(2, label='-видалити категорію-')
+    categories_menu.entryconfig(3, label='-видалити з категорії')
     if with_dates and not h_info and not h_to_use:
         dates()
     elif not with_dates and not h_info and not h_to_use:
@@ -154,6 +168,7 @@ def pl():
     menubar.entryconfigure(1, label='Język')
     menubar.entryconfigure(2, label='Usuwanie')
     menubar.entryconfigure(3, label='Pomoc')
+    menubar.entryconfigure(4, label='Kategorie')
     el_view_menu.entryconfig(0, label='Według Daty')
     el_view_menu.entryconfig(1, label='Układ Antona')
     el_view_menu.entryconfig(2, label='Według Wartości')
@@ -161,6 +176,10 @@ def pl():
     help_menu.entryconfig(1, label='Korzystanie')
     delete_menu.entryconfig(0, label='Usuń elementy')
     delete_menu.entryconfig(1, label='Usuń wszystko ❗❗❗')
+    categories_menu.entryconfig(0, label='+nowa kategoria+')
+    categories_menu.entryconfig(1, label='+dodaj do kategorii')
+    categories_menu.entryconfig(2, label='-usuń kategorię-')
+    categories_menu.entryconfig(3, label='-usuń z kategorii')
     if with_dates and not h_info and not h_to_use:
         dates()
     elif not with_dates and not h_info and not h_to_use:
@@ -256,7 +275,6 @@ def pr():
         display_text.insert(tk.END, f"\nTotal: {add()}")
     display_text.see(tk.END)
     display_text.configure(state='disabled')
-
 
 
 def lc():
@@ -665,6 +683,43 @@ def delete_all_func():
                 tk.messagebox.showinfo(title='info', message="Deletion completed!")
 
 
+def add_category_f():
+    global add_category
+    add_category = 1
+
+
+def add_to_category_f():
+    global add_to_category
+    add_to_category = 1
+
+
+def delete_category_f():
+    global delete_category
+    delete_category = 1
+
+
+def delete_from_category_f():
+    global delete_from_category
+    delete_from_category = 1
+
+
+def read_from_categories(t):
+    global with_dates, h_info, h_to_use, tye
+    tye = 'date'
+    os()
+    with_dates = 1
+    h_to_use = 0
+    h_info = 0
+    display_text.insert(tkinter.END, f'{t.upper()}\n_______________\n')
+    display_text.configure(state='disabled')
+
+
+def additional_categories():
+    for e in datas.database.ch_categories():
+        p_read_from_categories = partial(read_from_categories, e)
+        categories_menu.add_command(label=f'{e}', command=p_read_from_categories)
+
+
 def help_info():
     global h_info, h_to_use, with_dates
     h_to_use = 0
@@ -795,8 +850,8 @@ def enter():
             g += 'For code to look better'
             new_inside = ''
             for e in inside:
-                new_inside += f'{e}⸥'
-            description = new_inside.strip('⸥')
+                new_inside += f'{e}¸'
+            description = new_inside.strip('¸')
             root.bind('<Return>', lambda event: empty_function())
         except IndexError:
             description = input_text.get('1.0', f'{tk.END}-1c').replace('\n', '').strip()
@@ -862,12 +917,14 @@ el_view_menu = tk.Menu(menubar)
 lang_menu = tk.Menu(menubar)
 help_menu = tk.Menu(menubar)
 delete_menu = tk.Menu(menubar)
+categories_menu = tk.Menu(menubar)
 
-
-menubar.add_cascade(menu=el_view_menu, label="Sort")
-menubar.add_cascade(menu=lang_menu, label="Language")
+menubar.add_cascade(menu=el_view_menu, label='Sort')
+menubar.add_cascade(menu=lang_menu, label='Language')
 menubar.add_cascade(menu=delete_menu, label='Delete')
 menubar.add_cascade(menu=help_menu, label='Help')
+menubar.add_cascade(menu=categories_menu, label='Categories')
+
 
 el_view_menu.add_command(label='Dated', command=dates)
 el_view_menu.add_command(label="Anton's Arrange", command=lc)
@@ -879,15 +936,19 @@ delete_menu.add_command(label='Delete Items', command=delete_items_func)
 delete_menu.add_command(label='Delete All ❗❗❗', command=delete_all_func)
 help_menu.add_command(label='About App', command=help_info)
 help_menu.add_command(label='How To Use', command=help_usage)
-
+categories_menu.add_command(label='+new category+', command=add_category_f)
+categories_menu.add_command(label='+add to category', command=add_to_category_f)
+categories_menu.add_command(label='-delete category-', command=delete_category_f)
+categories_menu.add_command(label='-delete from category', command=delete_from_category_f)
+additional_categories()
 
 display_text = tk.Text(frame, height='15', width='93', bg='#4A4747', fg='white', cursor='arrow', wrap='word')
 confirmation_text = tk.Text(frame, height='15', width='30', bg='#4A4747', fg='white', wrap='word', cursor='arrow')
 what_to_do_text = tk.Text(frame, height='3', width='20', bg='#4A4747', fg='white', wrap='word', cursor='arrow')
-button = tk.Button(frame, text='Apply', height='4', bg='green', width=9, command=button_func, cursor='arrow')
-cancel = tk.Button(frame, text='Cancel', height='4', bg='red', width=9, command=cancel_func, cursor='arrow')
+button = tk.Button(frame, text='Apply', height='4', bg='green', width=9, fg='white', command=button_func, cursor='arrow')
+cancel = tk.Button(frame, text='Cancel', height='4', bg='red', fg='white', width=9, command=cancel_func, cursor='arrow')
 input_text = tk.Text(frame, height='15', width='20', bg='#3A413A', fg='white', cursor='arrow')
-butt_stable = tk.Button(input_text, height='3', text='↲', bg='#3A413A', command=enter, cursor='arrow')
+butt_stable = tk.Button(input_text, height='3', text='↲', bg='#3A413A', fg="white", command=enter, cursor='arrow')
 my_scrollbar = tk.Scrollbar(frame, orient="vertical", width='7', command=display_text.yview)
 
 what_to_do_text.insert(tkinter.END, 'Insert amount here:')
