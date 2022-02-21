@@ -6,7 +6,7 @@ import os
 from datetime import datetime
 from operator import itemgetter
 
-T = "Transactions.csv"
+T = "datas/Transactions.csv"
 C = "datas/categories.csv"
 naive_now = datetime.now()
 
@@ -16,8 +16,8 @@ def new(p, ds, d=naive_now.strftime('%Y-%m-%d')):
         file.write(f"{d},{p},{ds}\n")
 
 
-def listing():
-    with open(T, 'r') as file:
+def listing(a=T):
+    with open(a, 'r') as file:
         lines = [line.strip().split(',') for line in file.readlines()]
         return [
             {'date': line[0], 'price': float(line[1]), 'description': line[2]}
