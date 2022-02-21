@@ -2,10 +2,12 @@
 saving info in csv file as lists in format:
 [date, price, description]
 """
+import os
 from datetime import datetime
 from operator import itemgetter
 
 T = "Transactions.csv"
+C = "datas/categories.csv"
 naive_now = datetime.now()
 
 
@@ -53,6 +55,58 @@ def delete(da, de, pr):
 
 def del_all():
     with open(T, 'w'):
+        pass
+
+
+def ch_categories() -> list:
+    with open(C, 'r') as file:
+        categories = file.read().strip().split(',')
+        for e in categories:
+            try:
+                open(f'datas/{e}.csv', 'x')
+            except FileExistsError:
+                pass
+    return categories
+
+
+def new_category(c):
+    x = 0
+    for e in ch_categories():
+        if c == e:
+            x = 1
+    if x == 0:
+        if ch_categories() == ['']:
+            with open(C, 'a') as file:
+                file.write(f'{c}')
+        else:
+            with open(C, 'a') as file:
+                file.write(f',{c}')
+    ch_categories()
+
+
+def add_to_category(c, e):
+    with open(f'datas/{c}', 'a') as file:
+        file.write(f"{e}\n")
+
+
+def del_category(c):
+    b = 0
+    lit = ch_categories()
+    open(C, 'w')
+    for e in lit:
+        if e == c:
+            pass
+        else:
+            with open(C, 'a') as file:
+                if b == 0:
+                    file.write(f'{e}')
+                else:
+                    file.write(f',{e}')
+                b += 1
+
+    try:
+        os.remove(f'datas/{c}.csv')
+    except FileNotFoundError:
         pass
 
 
