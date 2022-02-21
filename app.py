@@ -41,8 +41,6 @@ add_category = 0
 add_to_category = 0
 delete_category = 0
 delete_from_category = 0
-h_info = 0
-h_to_use = 0
 
 
 def en():
@@ -82,16 +80,7 @@ def en():
     categories_menu.entryconfig(1, label='+add to category')
     categories_menu.entryconfig(2, label='-delete category-')
     categories_menu.entryconfig(3, label='-delete from category')
-    if with_dates and not h_info and not h_to_use:
-        dates()
-    elif not with_dates and not h_info and not h_to_use:
-        lc()
-    elif h_info:
-        help_info()
-    elif h_to_use:
-        help_usage()
-    else:
-        dates()
+    dates()
 
 
 def ua():
@@ -131,16 +120,7 @@ def ua():
     categories_menu.entryconfig(1, label='+додати до категорії')
     categories_menu.entryconfig(2, label='-видалити категорію-')
     categories_menu.entryconfig(3, label='-видалити з категорії')
-    if with_dates and not h_info and not h_to_use:
-        dates()
-    elif not with_dates and not h_info and not h_to_use:
-        lc()
-    elif h_info:
-        help_info()
-    elif h_to_use:
-        help_usage()
-    else:
-        dates()
+    dates()
 
 
 def pl():
@@ -180,16 +160,7 @@ def pl():
     categories_menu.entryconfig(1, label='+dodaj do kategorii')
     categories_menu.entryconfig(2, label='-usuń kategorię-')
     categories_menu.entryconfig(3, label='-usuń z kategorii')
-    if with_dates and not h_info and not h_to_use:
-        dates()
-    elif not with_dates and not h_info and not h_to_use:
-        lc()
-    elif h_info:
-        help_info()
-    elif h_to_use:
-        help_usage()
-    else:
-        dates()
+    dates()
 
 
 def empty_function():
@@ -224,12 +195,10 @@ def os():
 
 
 def dates():
-    global with_dates, h_info, h_to_use, tye
+    global with_dates, tye
     tye = 'date'
     os()
     with_dates = 1
-    h_to_use = 0
-    h_info = 0
     for exp in datas.database.listing():
         f_2f = "%.2f" % exp['price']
         to_print_price = "%-9s" % f_2f
@@ -278,12 +247,10 @@ def pr():
 
 
 def lc():
-    global with_dates, language, h_info, h_to_use, tye
+    global with_dates, language, tye
     tye = 'date'
     os()
     with_dates = 0
-    h_to_use = 0
-    h_info = 0
     current_year = ""
     current_month = ""
     price_month_sum = []
@@ -686,6 +653,63 @@ def delete_all_func():
 def add_category_f():
     global add_category
     add_category = 1
+    if language == 'ua':
+        ad = 'Додати нову категорію'
+        tl = 'Додавання категорії'
+    elif language == 'pl':
+        ad = 'Dodać nową kategorię'
+        tl = 'Dodawanie kategorii'
+    elif language == 'en':
+        ad = 'Add new category'
+        tl = 'Adding category'
+    else:
+        ad = 'Dodać nową kategorię'
+        tl = 'Dodawanie kategorii'
+    add_root = tk.Tk()
+    add_root.geometry('400x85')
+    add_root.title(tl)
+    add_root.option_add('*tearOff', False)
+
+    def swap():
+        global add_category
+        add_category = 1
+        try:
+            categories_menu.entryconfig(0, state='normal')
+        except tk.TclError:
+            pass
+        add_root.destroy()
+
+    def tiny_button_f():
+        illegal_characters = ['!', '@', '#', '$', '%', '&', '*', '"', "'", '+', '=', '{',
+                              '}', '<', '>', '?', '/', '\n', '`', '|']
+        txt = text_for_category.get('1.0', f'{tk.END}-1c')
+        for char in illegal_characters:
+            txt = txt.replace(char, '')
+        try:
+            datas.database.new_category(txt)
+            additional_categories()
+        except tk.TclError:
+            swap()
+        swap()
+
+    def add_check():
+        if text_for_category.get('1.0', f'{tk.END}-1c') == '':
+            tiny_button.configure(state='disabled')
+        else:
+            tiny_button.configure(state='normal')
+
+    text_for_category = tk.Text(add_root, width='25', height='2',)
+    tiny_button = tk.Button(add_root, text=ad, width='20', height='2', command=tiny_button_f)
+
+    text_for_category.pack(side='top', expand=False)
+    tiny_button.pack(side='top', expand=False)
+
+    tiny_button.configure(state='disabled')
+
+    add_root.bind('<Motion>', lambda event: add_check())
+    add_root.bind('<Button>', lambda event: add_check())
+    add_root.bind('<KeyPress>', lambda event: add_check())
+    add_root.protocol('WM_DELETE_WINDOW', swap)
 
 
 def add_to_category_f():
@@ -696,6 +720,52 @@ def add_to_category_f():
 def delete_category_f():
     global delete_category
     delete_category = 1
+    if language == 'ua':
+        ad = 'Видалити категорію'
+        tl = 'Видалення категорії'
+    elif language == 'pl':
+        ad = 'Usunąć kategorię'
+        tl = 'Usuwanie kategorii'
+    elif language == 'en':
+        ad = 'Delete category'
+        tl = 'Deleting category'
+    else:
+        ad = 'Usunąć kategorię'
+        tl = 'Usuwanie kategorii'
+
+    add_root = tk.Tk()
+    add_root.geometry('400x85')
+    add_root.title(tl)
+    add_root.option_add('*tearOff', False)
+
+    def swap():
+        global add_category
+        add_category = 1
+        try:
+            categories_menu.entryconfig(0, state='normal')
+        except tk.TclError:
+            pass
+        add_root.destroy()
+
+    def tiny_button_f():
+        current = list_of_categories.get()
+        try:
+            datas.database.del_category(current)
+            categories_menu.delete(current)
+            dates()
+            swap()
+        except tk.TclError:
+            swap()
+
+    list_of_categories = ttk.Combobox(add_root, width='25', height='2')
+    tiny_button = tk.Button(add_root, text=ad, width='20', height='2', command=tiny_button_f)
+
+    list_of_categories.pack(side='top', expand=False)
+    tiny_button.pack(side='top', expand=False)
+
+    list_of_categories['values'] = datas.database.ch_categories()
+    list_of_categories.get()
+    add_root.protocol('WM_DELETE_WINDOW', swap)
 
 
 def delete_from_category_f():
@@ -704,26 +774,51 @@ def delete_from_category_f():
 
 
 def read_from_categories(t):
-    global with_dates, h_info, h_to_use, tye
+    global with_dates, tye
     tye = 'date'
-    os()
-    with_dates = 1
-    h_to_use = 0
-    h_info = 0
+    a = []
+    for el in datas.database.listing(f'datas/{t}.csv'):
+        try:
+            a.append(el['price'])
+        except IndexError:
+            pass
+    s = "%.2f" % sum(a)
+    display_text.configure(state='normal')
+    display_text.delete('1.0', tk.END)
     display_text.insert(tkinter.END, f'{t.upper()}\n_______________\n')
+    for exp in datas.database.listing(f'datas/{t}.csv'):
+        if exp == ['']:
+            pass
+        else:
+            f_2f = "%.2f" % exp['price']
+            to_print_price = "%-9s" % f_2f
+            to_print_date = "%-10s" % exp['date']
+            if float(f_2f) < 0:
+                display_text.insert(tkinter.END, f"{to_print_date}  {to_print_price}  {exp['description']}\n", 'minus')
+            else:
+                display_text.insert(tkinter.END, f"{to_print_date}   {to_print_price} {exp['description']}\n", 'plus')
+    if language == 'en':
+        display_text.insert(tkinter.END, f"\nTotal: {s}")
+    elif language == 'pl':
+        display_text.insert(tkinter.END, f"\nŁącznie: {s}")
+    elif language == 'ua':
+        display_text.insert(tkinter.END, f"\nЗагалом: {s}")
+    else:
+        display_text.insert(tkinter.END, f"\nTotal: {s}")
+    display_text.see(tkinter.END)
     display_text.configure(state='disabled')
 
 
 def additional_categories():
     for e in datas.database.ch_categories():
-        p_read_from_categories = partial(read_from_categories, e)
-        categories_menu.add_command(label=f'{e}', command=p_read_from_categories)
+        if e == '':
+            pass
+        else:
+            p_read_from_categories = partial(read_from_categories, e)
+            categories_menu.add_command(label=f'{e}', command=p_read_from_categories)
 
 
 def help_info():
-    global h_info, h_to_use, with_dates
-    h_to_use = 0
-    h_info = 1
     os()
     if language == 'pl':
         display_text.insert(tk.END, datas.lang_help.h_pl, 'h')
@@ -741,10 +836,6 @@ def help_info():
 
 
 def help_usage():
-    os()
-    global h_to_use, h_info
-    h_to_use = 1
-    h_info = 0
     os()
     if language == 'pl':
         display_text.insert(tk.END, datas.lang_help.hu_pl, 'hu')
@@ -940,16 +1031,17 @@ categories_menu.add_command(label='+new category+', command=add_category_f)
 categories_menu.add_command(label='+add to category', command=add_to_category_f)
 categories_menu.add_command(label='-delete category-', command=delete_category_f)
 categories_menu.add_command(label='-delete from category', command=delete_from_category_f)
+categories_menu.add_command(label='---------------------')
 additional_categories()
 
 display_text = tk.Text(frame, height='15', width='93', bg='#4A4747', fg='white', cursor='arrow', wrap='word')
 confirmation_text = tk.Text(frame, height='15', width='30', bg='#4A4747', fg='white', wrap='word', cursor='arrow')
 what_to_do_text = tk.Text(frame, height='3', width='20', bg='#4A4747', fg='white', wrap='word', cursor='arrow')
-button = tk.Button(frame, text='Apply', height='4', bg='green', width=9, fg='white', command=button_func, cursor='arrow')
-cancel = tk.Button(frame, text='Cancel', height='4', bg='red', fg='white', width=9, command=cancel_func, cursor='arrow')
+button = tk.Button(frame, text='Apply', height='4', bg='green', width=9, fg='white', command=button_func)
+cancel = tk.Button(frame, text='Cancel', height='4', bg='red', fg='white', width=9, command=cancel_func)
 input_text = tk.Text(frame, height='15', width='20', bg='#3A413A', fg='white', cursor='arrow')
-butt_stable = tk.Button(input_text, height='3', text='↲', bg='#3A413A', fg="white", command=enter, cursor='arrow')
-my_scrollbar = tk.Scrollbar(frame, orient="vertical", width='7', command=display_text.yview)
+butt_stable = tk.Button(input_text, height='3', text='↲', bg='#3A413A', fg="white", command=enter)
+my_scrollbar = tk.Scrollbar(frame, orient="vertical", width='7', command=display_text.yview, cursor='arrow')
 
 what_to_do_text.insert(tkinter.END, 'Insert amount here:')
 what_to_do_text.tag_configure('center', justify='center')
