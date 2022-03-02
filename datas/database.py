@@ -17,29 +17,16 @@ def new(p, ds, d=naive_now.strftime('%Y-%m-%d')):
 
 
 def listing(a=T):
-    with open(a, 'r') as file:
-        lines = [line.strip().split(',') for line in file.readlines()]
-        return [
-            {'date': line[0], 'price': float(line[1]), 'description': line[2]}
-            for line in lines
-            ]
-
-
-def chck_to_delete(v, typ):
-    with open(T, 'r') as file:
-        lstt = []
-        lines = [line.strip().split(',') for line in file.readlines()]
-        for line in lines:
-            if line[typ] != str(v):
-                pass
+    if a != '':
+        with open(a, 'r') as file:
+            lines = [line.strip().split(',') for line in file.readlines()]
+            if lines != [''] or lines != ['\n']:
+                return [
+                    {'date': line[0], 'price': float(line[1]), 'description': line[2]}
+                    for line in lines
+                ]
             else:
-                lstt.append(1)
-        if len(lstt) == 0:
-            return "nothing"
-        elif len(lstt) == 1:
-            return 'delete'
-        else:
-            pass
+                return ""
 
 
 def delete(da, de, pr):
@@ -72,8 +59,15 @@ def ch_categories() -> list:
     return categories
 
 
-def category_addition(c):
-    pass
+def del_from_category(c, e):
+    if c != '' and e != '':
+        with open(f'datas/{c}.csv', 'r') as file:
+            lines = file.readlines()
+        with open(f'datas/{c}.csv', 'w') as file:
+            for line in lines:
+                element = line.strip().split(',')
+                if element[0] != e['date'] or element[1] != str(e['price']) or element[2] != e['description']:
+                    file.write(f"{line}")
 
 
 def new_category(c):
@@ -92,8 +86,9 @@ def new_category(c):
 
 
 def add_to_category(c, e):
-    with open(f'datas/{c}', 'a') as file:
-        file.write(f"{e}\n")
+    if c != '' and e != '':
+        with open(f'datas/{c}.csv', 'a') as file:
+            file.write(f"{e['date']},{e['price']},{e['description']}\n")
 
 
 def del_category(c):
