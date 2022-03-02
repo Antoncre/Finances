@@ -4,7 +4,6 @@ swoje wydatki i dochody oraz wyświetlać je w wygodny,
 posortowany według daty sposób
 """
 
-import tkinter
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
@@ -37,10 +36,8 @@ description = ''
 can_do = 1
 with_dates = 1
 deleting_item = 0
-add_category = 0
-add_to_category = 0
-delete_category = 0
-delete_from_category = 0
+latest_func = None
+old_cat = None
 
 
 def en():
@@ -77,10 +74,9 @@ def en():
     delete_menu.entryconfig(0, label='Delete Items')
     delete_menu.entryconfig(1, label='Delete All ❗❗❗')
     categories_menu.entryconfig(0, label='+new category+')
-    categories_menu.entryconfig(1, label='+add to category')
-    categories_menu.entryconfig(2, label='-delete category-')
-    categories_menu.entryconfig(3, label='-delete from category')
-    dates()
+    categories_menu.entryconfig(1, label='~edit categories~')
+    categories_menu.entryconfig(2, label='-delete from category')
+    latest_func()
 
 
 def ua():
@@ -117,10 +113,9 @@ def ua():
     delete_menu.entryconfig(0, label='Видалити Елементи')
     delete_menu.entryconfig(1, label='Видалити Все ❗❗❗')
     categories_menu.entryconfig(0, label='+нова категорія+')
-    categories_menu.entryconfig(1, label='+додати до категорії')
-    categories_menu.entryconfig(2, label='-видалити категорію-')
-    categories_menu.entryconfig(3, label='-видалити з категорії')
-    dates()
+    categories_menu.entryconfig(1, label='~едитувати категорію~')
+    categories_menu.entryconfig(2, label='-видалити з категорії')
+    latest_func()
 
 
 def pl():
@@ -157,10 +152,9 @@ def pl():
     delete_menu.entryconfig(0, label='Usuń elementy')
     delete_menu.entryconfig(1, label='Usuń wszystko ❗❗❗')
     categories_menu.entryconfig(0, label='+nowa kategoria+')
-    categories_menu.entryconfig(1, label='+dodaj do kategorii')
-    categories_menu.entryconfig(2, label='-usuń kategorię-')
-    categories_menu.entryconfig(3, label='-usuń z kategorii')
-    dates()
+    categories_menu.entryconfig(1, label='~edytuj kategorię~')
+    categories_menu.entryconfig(2, label='-usuń z kategorii')
+    latest_func()
 
 
 def empty_function():
@@ -195,37 +189,34 @@ def os():
 
 
 def dates():
-    global with_dates, tye
-    tye = 'date'
+    global latest_func
+    latest_func = dates
     os()
-    with_dates = 1
     for exp in datas.database.listing():
         f_2f = "%.2f" % exp['price']
         to_print_price = "%-9s" % f_2f
         to_print_date = "%-10s" % exp['date']
         if float(f_2f) < 0:
-            display_text.insert(tkinter.END, f"{to_print_date}  {to_print_price}  {exp['description']}\n", 'minus')
+            display_text.insert(tk.END, f"{to_print_date}  {to_print_price}  {exp['description']}\n", 'minus')
         else:
-            display_text.insert(tkinter.END, f"{to_print_date}   {to_print_price} {exp['description']}\n", 'plus')
+            display_text.insert(tk.END, f"{to_print_date}   {to_print_price} {exp['description']}\n", 'plus')
     if language == 'en':
-        display_text.insert(tkinter.END, f"\nTotal: {add()}")
+        display_text.insert(tk.END, f"\nTotal: {add()}")
     elif language == 'pl':
-        display_text.insert(tkinter.END, f"\nŁącznie: {add()}")
+        display_text.insert(tk.END, f"\nŁącznie: {add()}")
     elif language == 'ua':
-        display_text.insert(tkinter.END, f"\nЗагалом: {add()}")
+        display_text.insert(tk.END, f"\nЗагалом: {add()}")
     else:
-        display_text.insert(tkinter.END, f"\nTotal: {add()}")
-    display_text.see(tkinter.END)
+        display_text.insert(tk.END, f"\nTotal: {add()}")
+    display_text.see(tk.END)
     display_text.configure(state='disabled')
 
 
 def pr():
-    pass
-    global tye, with_dates
-    tye = 'price'
-    srt()
+    global latest_func
+    latest_func = pr
+    datas.database.sort('', 'price')
     os()
-    with_dates = 1
     for exp in datas.database.listing():
         f_2f = "%.2f" % exp['price']
         to_print_price = "%-9s" % f_2f
@@ -247,10 +238,9 @@ def pr():
 
 
 def lc():
-    global with_dates, language, tye
-    tye = 'date'
+    global latest_func
+    latest_func = lc
     os()
-    with_dates = 0
     current_year = ""
     current_month = ""
     price_month_sum = []
@@ -266,7 +256,7 @@ def lc():
     start_func = 1
     for exp in datas.database.listing():
         if start_func:
-            display_text.insert(tkinter.END, f"{exp['date'].split('-')[0]}:\n")
+            display_text.insert(tk.END, f"{exp['date'].split('-')[0]}:\n")
             start_func = 0
         f_2f = "%.2f" % exp['price']
         to_print_price = "%-9s" % f_2f
@@ -277,59 +267,59 @@ def lc():
         month = exp['date'].split('-')[1]
         if month != current_month and wp != 0 or year != current_year and wp != 0:
             if language == 'en':
-                display_text.insert(tkinter.END, f"\nMonthly expenses: {totm_wyd} zł\n", 'o')
-                display_text.insert(tkinter.END, f"Monthly income: {totm_do} zł\n", 'g')
-                display_text.insert(tkinter.END, f"\nMonthly: {summ_to_print} zł\n", 'y')
+                display_text.insert(tk.END, f"\nMonthly expenses: {totm_wyd} zł\n", 'o')
+                display_text.insert(tk.END, f"Monthly income: {totm_do} zł\n", 'g')
+                display_text.insert(tk.END, f"\nMonthly: {summ_to_print} zł\n", 'y')
             elif language == 'ua':
-                display_text.insert(tkinter.END, f"\nВитрати за місяць: {totm_wyd} zł\n", 'o')
-                display_text.insert(tkinter.END, f"Прибуток за місяць: {totm_do} zł\n", 'g')
-                display_text.insert(tkinter.END, f"\nЦього місяця загалом: {summ_to_print} zł\n", 'y')
+                display_text.insert(tk.END, f"\nВитрати за місяць: {totm_wyd} zł\n", 'o')
+                display_text.insert(tk.END, f"Прибуток за місяць: {totm_do} zł\n", 'g')
+                display_text.insert(tk.END, f"\nЦього місяця загалом: {summ_to_print} zł\n", 'y')
             elif language == 'pl':
-                display_text.insert(tkinter.END, f"\nMiesięczne wydatki: {totm_wyd} zł\n", 'o')
-                display_text.insert(tkinter.END, f"Miesięczne dochody: {totm_do} zł\n", 'g')
-                display_text.insert(tkinter.END, f"\nMiesięcznie: {summ_to_print} zł\n", 'y')
+                display_text.insert(tk.END, f"\nMiesięczne wydatki: {totm_wyd} zł\n", 'o')
+                display_text.insert(tk.END, f"Miesięczne dochody: {totm_do} zł\n", 'g')
+                display_text.insert(tk.END, f"\nMiesięcznie: {summ_to_print} zł\n", 'y')
             else:
-                display_text.insert(tkinter.END, f"\nMonthly expenses: {totm_wyd} zł\n", 'o')
-                display_text.insert(tkinter.END, f"Monthly income: {totm_do} zł\n", 'g')
-                display_text.insert(tkinter.END, f"\nMonthly: {summ_to_print} zł\n", 'y')
+                display_text.insert(tk.END, f"\nMonthly expenses: {totm_wyd} zł\n", 'o')
+                display_text.insert(tk.END, f"Monthly income: {totm_do} zł\n", 'g')
+                display_text.insert(tk.END, f"\nMonthly: {summ_to_print} zł\n", 'y')
             price_month_sum = []
             exp_month_sum = []
             inc_month_sum = []
         if year != current_year and wp != 0:
             if language == 'pl':
-                display_text.insert(tkinter.END, f"\nRoczne wydatki: {toty_wyd} zł\n")
-                display_text.insert(tkinter.END, f"Roczne Dochody: {toty_do} zł\n")
-                display_text.insert(tkinter.END, f"\nRocznie: {sumy_to_print} zł\n")
+                display_text.insert(tk.END, f"\nRoczne wydatki: {toty_wyd} zł\n")
+                display_text.insert(tk.END, f"Roczne Dochody: {toty_do} zł\n")
+                display_text.insert(tk.END, f"\nRocznie: {sumy_to_print} zł\n")
             elif language == 'ua':
-                display_text.insert(tkinter.END, f"\nВитрати за рік: {toty_wyd} zł\n")
-                display_text.insert(tkinter.END, f"Прибуток за рік: {toty_do} zł\n")
-                display_text.insert(tkinter.END, f"\nЦього року загалом: {sumy_to_print} zł\n")
+                display_text.insert(tk.END, f"\nВитрати за рік: {toty_wyd} zł\n")
+                display_text.insert(tk.END, f"Прибуток за рік: {toty_do} zł\n")
+                display_text.insert(tk.END, f"\nЦього року загалом: {sumy_to_print} zł\n")
             elif language == 'en':
-                display_text.insert(tkinter.END, f"\nAnnual expenses: {toty_wyd} zł\n")
-                display_text.insert(tkinter.END, f"Annual income: {toty_do} zł\n")
-                display_text.insert(tkinter.END, f"\nAnnually: {sumy_to_print} zł\n")
+                display_text.insert(tk.END, f"\nAnnual expenses: {toty_wyd} zł\n")
+                display_text.insert(tk.END, f"Annual income: {toty_do} zł\n")
+                display_text.insert(tk.END, f"\nAnnually: {sumy_to_print} zł\n")
             else:
-                display_text.insert(tkinter.END, f"\nAnnual expenses: {toty_wyd} zł\n")
-                display_text.insert(tkinter.END, f"Annual income: {toty_do} zł\n")
-                display_text.insert(tkinter.END, f"\nAnnually: {sumy_to_print} zł\n")
+                display_text.insert(tk.END, f"\nAnnual expenses: {toty_wyd} zł\n")
+                display_text.insert(tk.END, f"Annual income: {toty_do} zł\n")
+                display_text.insert(tk.END, f"\nAnnually: {sumy_to_print} zł\n")
             price_year_sum = []
             exp_year_sum = []
             inc_year_sum = []
-            display_text.insert(tkinter.END, f"\n{year}:\n")
+            display_text.insert(tk.END, f"\n{year}:\n")
         if month != current_month or year != current_year:
             if month in MONTHS:
-                display_text.insert(tkinter.END, f"\n{MONTHS[month]}\n")
+                display_text.insert(tk.END, f"\n{MONTHS[month]}\n")
             else:
-                display_text.insert(tkinter.END, f"\n{month}:\n")
+                display_text.insert(tk.END, f"\n{month}:\n")
             current_month = month
             current_year = year
             wp = 1
         if float(f_2f) >= 0:
-            display_text.insert(tkinter.END, f" {to_print_price} {exp['description']}\n", 'plus')
+            display_text.insert(tk.END, f" {to_print_price} {exp['description']}\n", 'plus')
             inc_month_sum.append(exp['price'])
             inc_year_sum.append(exp['price'])
         else:
-            display_text.insert(tkinter.END, f"{to_print_price}  {exp['description']}\n", 'minus')
+            display_text.insert(tk.END, f"{to_print_price}  {exp['description']}\n", 'minus')
             exp_month_sum.append(exp['price'])
             exp_year_sum.append(exp['price'])
         price_month_sum.append(exp['price'])
@@ -338,21 +328,21 @@ def lc():
         totm_wyd = "%.2f" % sum(exp_month_sum)
         totm_do = "%.2f" % sum(inc_month_sum)
     if language == 'pl':
-        display_text.insert(tkinter.END, f"\nMiesięczne wydatki: {totm_wyd} zł\n", 'o')
-        display_text.insert(tkinter.END, f"Miesięczne dochody: {totm_do} zł\n", 'g')
-        display_text.insert(tkinter.END, f"\nMiesięcznie: {summ_to_print} zł\n", 'y')
-        display_text.insert(tkinter.END, f"\nŁącznie całość: {add()}", 'm')
+        display_text.insert(tk.END, f"\nMiesięczne wydatki: {totm_wyd} zł\n", 'o')
+        display_text.insert(tk.END, f"Miesięczne dochody: {totm_do} zł\n", 'g')
+        display_text.insert(tk.END, f"\nMiesięcznie: {summ_to_print} zł\n", 'y')
+        display_text.insert(tk.END, f"\nŁącznie całość: {add()}", 'm')
     elif language == 'ua':
-        display_text.insert(tkinter.END, f"\nВитрати за місяць: {totm_wyd} zł\n", 'o')
-        display_text.insert(tkinter.END, f"Прибуток за місяць: {totm_do} zł\n", 'g')
-        display_text.insert(tkinter.END, f"\nЦього місяця загалом: {summ_to_print} zł\n", 'y')
-        display_text.insert(tkinter.END, f"\nЗагалом: {add()}", 'm')
+        display_text.insert(tk.END, f"\nВитрати за місяць: {totm_wyd} zł\n", 'o')
+        display_text.insert(tk.END, f"Прибуток за місяць: {totm_do} zł\n", 'g')
+        display_text.insert(tk.END, f"\nЦього місяця загалом: {summ_to_print} zł\n", 'y')
+        display_text.insert(tk.END, f"\nЗагалом: {add()}", 'm')
     elif language == 'en':
-        display_text.insert(tkinter.END, f"\nMonthly expenses: {totm_wyd} zł\n", 'o')
-        display_text.insert(tkinter.END, f"Monthly income: {totm_do} zł\n", 'g')
-        display_text.insert(tkinter.END, f"\nMonthly: {summ_to_print} zł\n", 'y')
-        display_text.insert(tkinter.END, f"\nTotal: {add()}", 'm')
-    display_text.see(tkinter.END)
+        display_text.insert(tk.END, f"\nMonthly expenses: {totm_wyd} zł\n", 'o')
+        display_text.insert(tk.END, f"Monthly income: {totm_do} zł\n", 'g')
+        display_text.insert(tk.END, f"\nMonthly: {summ_to_print} zł\n", 'y')
+        display_text.insert(tk.END, f"\nTotal: {add()}", 'm')
+    display_text.see(tk.END)
     display_text.configure(state='disabled')
 
 
@@ -452,9 +442,9 @@ def cancel_func():
     price = ''
     confirmation_text.configure(state='normal')
     confirmation_text.configure(state='normal')
-    what_to_do_text.delete('1.0', tkinter.END)
-    confirmation_text.delete('1.0', tkinter.END)
-    input_text.delete('1.0', tkinter.END)
+    what_to_do_text.delete('1.0', tk.END)
+    confirmation_text.delete('1.0', tk.END)
+    input_text.delete('1.0', tk.END)
     confirmation_text.configure(state='disabled')
     what_to_do_text.configure(state='disabled')
     butt_stable.configure(state='disabled')
@@ -651,8 +641,9 @@ def delete_all_func():
 
 
 def add_category_f():
-    global add_category
-    add_category = 1
+    categories_menu.entryconfig(0, state='disabled')
+    categories_menu.entryconfig(1, state='disabled')
+    categories_menu.entryconfig(2, state='disabled')
     if language == 'ua':
         ad = 'Додати нову категорію'
         tl = 'Додавання категорії'
@@ -671,13 +662,15 @@ def add_category_f():
     add_root.option_add('*tearOff', False)
 
     def swap():
-        global add_category
-        add_category = 1
         try:
             categories_menu.entryconfig(0, state='normal')
+            categories_menu.entryconfig(1, state='normal')
+            categories_menu.entryconfig(2, state='normal')
+            latest_func
+            add_root.destroy()
         except tk.TclError:
-            pass
-        add_root.destroy()
+            print('tlc error occires')
+            add_root.destroy()
 
     def tiny_button_f():
         illegal_characters = ['!', '@', '#', '$', '%', '&', '*', '"', "'", '+', '=', '{',
@@ -686,11 +679,15 @@ def add_category_f():
         for char in illegal_characters:
             txt = txt.replace(char, '')
         try:
+            """ delete categories from 3:end of categories """
+            ch = len(datas.database.ch_categories())
+            for element in range(ch):
+                categories_menu.delete(4, 4+element)
             datas.database.new_category(txt)
             additional_categories()
-        except tk.TclError:
             swap()
-        swap()
+        except tk.TclError:
+            add_root.destroy()
 
     def add_check():
         if text_for_category.get('1.0', f'{tk.END}-1c') == '':
@@ -712,14 +709,145 @@ def add_category_f():
     add_root.protocol('WM_DELETE_WINDOW', swap)
 
 
-def add_to_category_f():
-    global add_to_category
-    add_to_category = 1
+def edit_category_f():
+    dict_to_this = {}
+    complete_list = []
+    secure_choosing_dict = {}
+    categories_menu.entryconfig(0, state='disabled')
+    categories_menu.entryconfig(1, state='disabled')
+    categories_menu.entryconfig(2, state='disabled')
+
+    e_root = tk.Tk()
+
+    e_root.geometry('1000x750')
+    e_root.title('Editing Category')
+    e_root.option_add('*tearOff', False)
+
+    def swap():
+        try:
+            categories_menu.entryconfig(0, state='normal')
+            categories_menu.entryconfig(1, state='normal')
+            categories_menu.entryconfig(2, state='normal')
+            latest_func
+        except tk.TclError:
+            pass
+        e_root.destroy()
+
+    def category_select():
+        global old_cat
+        current = list_of_categories.get()
+        if current != old_cat:
+            text_field.configure(state='normal')
+            text_field.delete('1.0', tk.END)
+
+            #if secure_choosing_dict[current]:
+            #key error   pass
+
+            for o in complete_list:
+                dict_to_this[o[0]].state(['!alternate'])
+                dict_to_this[o[0]].state(['!selected'])
+
+            for o in complete_list:
+                for el in datas.database.listing(f'datas/{current}.csv'):
+                    if el['date'] == o[1] and el['price'] == o[2] and el['description'] == o[3]:
+                        dict_to_this[o[0]].state(['!alternate'])
+                        dict_to_this[o[0]].state(['selected'])
+                        b = {'date': o[1], 'price': o[2], 'description': o[3]}
+                        inserting(o[0], o[3], b)
+            old_cat = current
+
+    def inserting(n, ds, exp):
+        c = list_of_categories.get()
+        if dict_to_this[n].instate(['selected']):
+            datas.database.add_to_category(c, exp)
+            text_field.configure(state='normal')
+            text_field.insert(tk.END, f"\n{n}. {ds}\n")
+            text_field.configure(state='disabled')
+        else:
+            datas.database.del_from_category(c, exp)
+            text_field.configure(state='normal')
+            n_text = text_field.get('1.0', f'{tk.END}-1c').replace(f"\n{n}. {ds}\n", "")
+            text_field.delete('1.0', tk.END)
+            text_field.insert(tk.END, n_text)
+            text_field.configure(state='disabled')
+
+    def add_obj():
+        n = 0
+        for exp in datas.database.listing():
+            f_2f = "%.2f" % exp['price']
+            to_print_price = "%-9s" % f_2f
+            to_print_date = "%-10s" % exp['date']
+
+            complete_list.append([n, exp['date'], exp['price'], exp['description']])
+
+            p_inserting = partial(inserting, n, exp['description'], exp)
+            dict_to_this[n] = ttk.Checkbutton(new_frame, text=f"{to_print_date}  {to_print_price}"
+                                                              f"  {exp['description']}\n",
+                                              command=p_inserting)
+            n += 1
+
+    def checking():
+        global old_cat
+        old_cat = list_of_categories.get()
+
+    if language == 'ua':
+        label = 'Вибрані елементи:'
+        c_label = 'Виберіть категорію'
+    elif language == 'pl':
+        label = 'Wybrane elementy:'
+        c_label = 'Wybierz kategorię'
+    elif language == 'en':
+        label = 'Selected items:'
+        c_label = 'Select category'
+    else:
+        label = 'Wybrane elementy:'
+        c_label = 'Wybierz kategorię'
+
+    d_frame = tk.Frame(e_root)
+    canvas = tk.Canvas(d_frame, bg="#D7D9D6")
+    text_field = tk.Text(d_frame, width='250', height='25', wrap='word', bg="#4A4747", fg='white')
+    new_frame = tk.Frame(canvas)
+    label_selected = tk.Label(d_frame, text=label)
+    label_choose = tk.Label(d_frame, text=c_label)
+    del_scrollbar = tk.Scrollbar(text_field, orient="vertical", width='7', command=text_field.yview, cursor='arrow')
+    list_of_categories = ttk.Combobox(d_frame, width='25', height='2', state='readonly')
+
+    additional_scrollbar = ttk.Scrollbar(d_frame, orient='vertical', command=canvas.yview)
+    canvas.configure(yscrollcommand=additional_scrollbar.set)
+    canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox('all')))
+    d_frame.pack(expand=True, fill='both')
+    additional_scrollbar.pack(side='left', fill='y')
+    canvas.pack(side='left', expand=True, fill='both')
+    canvas.create_window((0, 0), anchor='w', window=new_frame, width='700')
+
+    label_choose.pack(side='top', fill='x')
+    list_of_categories.pack(side='top', expand=False)
+    label_selected.pack(side='top', fill='x')
+
+    text_field.pack(side='top', fill='both', expand=True)
+    del_scrollbar.pack(side='right', expand=False, fill='y')
+
+    list_of_categories['values'] = datas.database.ch_categories()
+
+    add_obj()
+
+    for ob in dict_to_this.values():
+        ob.pack(side='top', fill='x')
+
+    text_field["yscrollcommand"] = del_scrollbar.set
+    text_field.tag_configure('center', justify='center')
+    text_field.tag_add('center', 1.0, 'end')
+
+    text_field.configure(state='disabled')
+    e_root.protocol('WM_DELETE_WINDOW', swap)
+    e_root.bind('<Motion>', lambda event: checking())
+    e_root.bind('<<ComboboxSelected>>', lambda event: category_select())
 
 
 def delete_category_f():
-    global delete_category
-    delete_category = 1
+    categories_menu.entryconfig(0, state='disabled')
+    categories_menu.entryconfig(1, state='disabled')
+    categories_menu.entryconfig(2, state='disabled')
     if language == 'ua':
         ad = 'Видалити категорію'
         tl = 'Видалення категорії'
@@ -739,10 +867,10 @@ def delete_category_f():
     add_root.option_add('*tearOff', False)
 
     def swap():
-        global add_category
-        add_category = 1
         try:
             categories_menu.entryconfig(0, state='normal')
+            categories_menu.entryconfig(1, state='normal')
+            categories_menu.entryconfig(2, state='normal')
         except tk.TclError:
             pass
         add_root.destroy()
@@ -752,12 +880,12 @@ def delete_category_f():
         try:
             datas.database.del_category(current)
             categories_menu.delete(current)
-            dates()
+            latest_func
             swap()
         except tk.TclError:
             swap()
 
-    list_of_categories = ttk.Combobox(add_root, width='25', height='2')
+    list_of_categories = ttk.Combobox(add_root, width='25', height='2', state='readonly')
     tiny_button = tk.Button(add_root, text=ad, width='20', height='2', command=tiny_button_f)
 
     list_of_categories.pack(side='top', expand=False)
@@ -768,14 +896,7 @@ def delete_category_f():
     add_root.protocol('WM_DELETE_WINDOW', swap)
 
 
-def delete_from_category_f():
-    global delete_from_category
-    delete_from_category = 1
-
-
 def read_from_categories(t):
-    global with_dates, tye
-    tye = 'date'
     a = []
     for el in datas.database.listing(f'datas/{t}.csv'):
         try:
@@ -785,7 +906,7 @@ def read_from_categories(t):
     s = "%.2f" % sum(a)
     display_text.configure(state='normal')
     display_text.delete('1.0', tk.END)
-    display_text.insert(tkinter.END, f'{t.upper()}\n_______________\n')
+    display_text.insert(tk.END, f'{t.upper()}\n_______________\n')
     for exp in datas.database.listing(f'datas/{t}.csv'):
         if exp == ['']:
             pass
@@ -794,18 +915,18 @@ def read_from_categories(t):
             to_print_price = "%-9s" % f_2f
             to_print_date = "%-10s" % exp['date']
             if float(f_2f) < 0:
-                display_text.insert(tkinter.END, f"{to_print_date}  {to_print_price}  {exp['description']}\n", 'minus')
+                display_text.insert(tk.END, f"{to_print_date}  {to_print_price}  {exp['description']}\n", 'minus')
             else:
-                display_text.insert(tkinter.END, f"{to_print_date}   {to_print_price} {exp['description']}\n", 'plus')
+                display_text.insert(tk.END, f"{to_print_date}   {to_print_price} {exp['description']}\n", 'plus')
     if language == 'en':
-        display_text.insert(tkinter.END, f"\nTotal: {s}")
+        display_text.insert(tk.END, f"\nTotal: {s}")
     elif language == 'pl':
-        display_text.insert(tkinter.END, f"\nŁącznie: {s}")
+        display_text.insert(tk.END, f"\nŁącznie: {s}")
     elif language == 'ua':
-        display_text.insert(tkinter.END, f"\nЗагалом: {s}")
+        display_text.insert(tk.END, f"\nЗагалом: {s}")
     else:
-        display_text.insert(tkinter.END, f"\nTotal: {s}")
-    display_text.see(tkinter.END)
+        display_text.insert(tk.END, f"\nTotal: {s}")
+    display_text.see(tk.END)
     display_text.configure(state='disabled')
 
 
@@ -1028,9 +1149,8 @@ delete_menu.add_command(label='Delete All ❗❗❗', command=delete_all_func)
 help_menu.add_command(label='About App', command=help_info)
 help_menu.add_command(label='How To Use', command=help_usage)
 categories_menu.add_command(label='+new category+', command=add_category_f)
-categories_menu.add_command(label='+add to category', command=add_to_category_f)
-categories_menu.add_command(label='-delete category-', command=delete_category_f)
-categories_menu.add_command(label='-delete from category', command=delete_from_category_f)
+categories_menu.add_command(label='~edit categories~', command=edit_category_f)
+categories_menu.add_command(label='-delete category', command=delete_category_f)
 categories_menu.add_command(label='---------------------')
 additional_categories()
 
@@ -1043,7 +1163,7 @@ input_text = tk.Text(frame, height='15', width='20', bg='#3A413A', fg='white', c
 butt_stable = tk.Button(input_text, height='3', text='↲', bg='#3A413A', fg="white", command=enter)
 my_scrollbar = tk.Scrollbar(frame, orient="vertical", width='7', command=display_text.yview, cursor='arrow')
 
-what_to_do_text.insert(tkinter.END, 'Insert amount here:')
+what_to_do_text.insert(tk.END, 'Insert amount here:')
 what_to_do_text.tag_configure('center', justify='center')
 what_to_do_text.tag_add('center', 1.0, 'end')
 what_to_do_text.configure(state='disabled')
@@ -1068,6 +1188,8 @@ root.bind('<Button>', lambda event: check_for_changes())
 root.bind('<KeyPress>', lambda event: check_for_changes())
 root.bind('<Escape>', lambda event: cancel_func())
 
+latest_func = dates
+
 if language == 'en':
     en()
 elif language == 'pl':
@@ -1077,5 +1199,4 @@ elif language == 'ua':
 else:
     pl()
 
-dates()
 root.mainloop()
