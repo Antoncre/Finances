@@ -86,9 +86,16 @@ def new_category(c):
 
 
 def add_to_category(c, e):
+    v = 0
     if c != '' and e != '':
-        with open(f'datas/{c}.csv', 'a') as file:
-            file.write(f"{e['date']},{e['price']},{e['description']}\n")
+        for el in listing(f'datas/{c}.csv'):
+            if el['date'] == e['date'] and el['price'] == e['price'] and el['description'] == e['description']:
+                v += 1
+            else:
+                pass
+        if v == 0:
+            with open(f'datas/{c}.csv', 'a') as file:
+                file.write(f"{e['date']},{e['price']},{e['description']}\n")
 
 
 def del_category(c):
