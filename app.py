@@ -38,6 +38,7 @@ with_dates = 1
 deleting_item = 0
 latest_func = None
 old_cat = None
+title = 'dates'
 
 
 def en():
@@ -75,7 +76,7 @@ def en():
     delete_menu.entryconfig(1, label='Delete All ❗❗❗')
     categories_menu.entryconfig(0, label='+new category+')
     categories_menu.entryconfig(1, label='~edit categories~')
-    categories_menu.entryconfig(2, label='-delete from category')
+    categories_menu.entryconfig(2, label='-delete category')
     latest_func()
 
 
@@ -114,7 +115,7 @@ def ua():
     delete_menu.entryconfig(1, label='Видалити Все ❗❗❗')
     categories_menu.entryconfig(0, label='+нова категорія+')
     categories_menu.entryconfig(1, label='~едитувати категорію~')
-    categories_menu.entryconfig(2, label='-видалити з категорії')
+    categories_menu.entryconfig(2, label='-видалити категорію')
     latest_func()
 
 
@@ -153,7 +154,7 @@ def pl():
     delete_menu.entryconfig(1, label='Usuń wszystko ❗❗❗')
     categories_menu.entryconfig(0, label='+nowa kategoria+')
     categories_menu.entryconfig(1, label='~edytuj kategorię~')
-    categories_menu.entryconfig(2, label='-usuń z kategorii')
+    categories_menu.entryconfig(2, label='-usuń kategorię-')
     latest_func()
 
 
@@ -189,9 +190,19 @@ def os():
 
 
 def dates():
-    global latest_func
+    global latest_func, tye, title
+    tye = 'date'
     latest_func = dates
+    if language == 'ua':
+        title = 'Датовано'
+    elif language == 'pl':
+        title = 'Według Daty'
+    elif language == 'en':
+        title = 'Dated'
+    else:
+        title = 'według daty'
     os()
+    display_text.insert(tk.END, f'{title.upper()}\n_______________\n')
     for exp in datas.database.listing():
         f_2f = "%.2f" % exp['price']
         to_print_price = "%-9s" % f_2f
@@ -213,10 +224,18 @@ def dates():
 
 
 def pr():
-    global latest_func
-    latest_func = pr
-    datas.database.sort('', 'price')
+    global latest_func, tye, title
+    tye = 'price'
+    if language == 'ua':
+        title = 'За вартістю'
+    elif language == 'pl':
+        title = 'Według Wartości'
+    elif language == 'en':
+        title = 'By price'
+    else:
+        title = 'według wartości'
     os()
+    display_text.insert(tk.END, f'{title.upper()}\n_______________\n')
     for exp in datas.database.listing():
         f_2f = "%.2f" % exp['price']
         to_print_price = "%-9s" % f_2f
@@ -238,9 +257,19 @@ def pr():
 
 
 def lc():
-    global latest_func
+    global latest_func, tye, title
+    tye = 'date'
     latest_func = lc
+    if language == 'ua':
+        title = 'Структура Антона'
+    elif language == 'pl':
+        title = 'Układ Antona'
+    elif language == 'en':
+        title = "Anton's arrange"
+    else:
+        title = 'Układ Antona'
     os()
+    display_text.insert(tk.END, f'{title.upper()}\n_______________\n')
     current_year = ""
     current_month = ""
     price_month_sum = []
@@ -666,11 +695,10 @@ def add_category_f():
             categories_menu.entryconfig(0, state='normal')
             categories_menu.entryconfig(1, state='normal')
             categories_menu.entryconfig(2, state='normal')
-            latest_func
-            add_root.destroy()
+            latest_func()
         except tk.TclError:
-            print('tlc error occires')
-            add_root.destroy()
+            pass
+        add_root.destroy()
 
     def tiny_button_f():
         illegal_characters = ['!', '@', '#', '$', '%', '&', '*', '"', "'", '+', '=', '{',
@@ -712,7 +740,6 @@ def add_category_f():
 def edit_category_f():
     dict_to_this = {}
     complete_list = []
-    secure_choosing_dict = {}
     categories_menu.entryconfig(0, state='disabled')
     categories_menu.entryconfig(1, state='disabled')
     categories_menu.entryconfig(2, state='disabled')
@@ -728,7 +755,7 @@ def edit_category_f():
             categories_menu.entryconfig(0, state='normal')
             categories_menu.entryconfig(1, state='normal')
             categories_menu.entryconfig(2, state='normal')
-            latest_func
+            latest_func()
         except tk.TclError:
             pass
         e_root.destroy()
@@ -739,9 +766,6 @@ def edit_category_f():
         if current != old_cat:
             text_field.configure(state='normal')
             text_field.delete('1.0', tk.END)
-
-            #if secure_choosing_dict[current]:
-            #key error   pass
 
             for o in complete_list:
                 dict_to_this[o[0]].state(['!alternate'])
@@ -871,6 +895,7 @@ def delete_category_f():
             categories_menu.entryconfig(0, state='normal')
             categories_menu.entryconfig(1, state='normal')
             categories_menu.entryconfig(2, state='normal')
+            latest_func()
         except tk.TclError:
             pass
         add_root.destroy()
@@ -880,7 +905,7 @@ def delete_category_f():
         try:
             datas.database.del_category(current)
             categories_menu.delete(current)
-            latest_func
+            latest_func()
             swap()
         except tk.TclError:
             swap()
