@@ -39,6 +39,7 @@ deleting_item = 0
 latest_func = None
 old_cat = None
 title = 'dates'
+last_date = None
 
 
 def en():
@@ -435,6 +436,7 @@ def check_for_changes():
                           what_to_do_text.get('1.0', 'end-1c') == 'Введіть дату:'):
         butt_stable.configure(state='normal')
         root.bind('<Return>', lambda event: enter())
+        root.bind('<Up>', lambda event: inserting_last_date())
 
     elif (what_to_do_text.get('1.0', 'end-1c') == 'Insert description here:' or
           what_to_do_text.get('1.0', 'end-1c') == 'Wprowadź opis:' or
@@ -453,15 +455,30 @@ def check_for_changes():
 
 
 def button_func():
+    global last_date
     datas.database.new(price, description, date)
     if with_dates:
         dates()
     else:
         lc()
+    last_date = date
     confirmation_text.configure(state='normal')
     confirmation_text.delete('1.0', 'end-1c')
     confirmation_text.configure(state='disabled')
     enter()
+
+
+def inserting_last_date():
+    if can_do and (what_to_do_text.get('1.0', f'{tk.END}-1c') == 'Insert date here:' or
+                   what_to_do_text.get('1.0', f'{tk.END}-1c') == 'Wprowadź datę:' or
+                   what_to_do_text.get('1.0', f'{tk.END}-1c') == 'Введіть дату:'):
+        what_to_do_text.delete('1.0', tk.END)
+        if input_text.get('1.0', f"{tk.END}-1c").strip() == '':
+            if last_date:
+                input_text.insert(tk.INSERT, f"{last_date}")
+            else:
+                today = now.strftime('%Y-%m-%d')
+                input_text.insert(tk.INSERT, f"{today}")
 
 
 def cancel_func():
