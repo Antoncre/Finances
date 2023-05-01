@@ -34,7 +34,7 @@ date = ''
 tye = 'date'
 description = ''
 can_do = 1
-with_dates = 1
+with_dates = 0
 deleting_item = 0
 latest_func = None
 old_cat = None
@@ -289,6 +289,7 @@ def lc():
             display_text.insert(tk.END, f"{exp['date'].split('-')[0]}:\n")
             start_func = 0
         f_2f = "%.2f" % exp['price']
+        to_print_date = exp['date']
         to_print_price = "%-9s" % f_2f
         sumy_to_print = "%.2f" % sum(price_year_sum)
         toty_wyd = "%.2f" % sum(exp_year_sum)
@@ -345,11 +346,11 @@ def lc():
             current_year = year
             wp = 1
         if float(f_2f) >= 0:
-            display_text.insert(tk.END, f" {to_print_price} {exp['description']}\n", 'plus')
+            display_text.insert(tk.END, f" {to_print_price} {to_print_date}   {exp['description']}\n", 'plus')
             inc_month_sum.append(exp['price'])
             inc_year_sum.append(exp['price'])
         else:
-            display_text.insert(tk.END, f"{to_print_price}  {exp['description']}\n", 'minus')
+            display_text.insert(tk.END, f"{to_print_price}  {to_print_date}   {exp['description']}\n", 'minus')
             exp_month_sum.append(exp['price'])
             exp_year_sum.append(exp['price'])
         price_month_sum.append(exp['price'])
@@ -1230,7 +1231,7 @@ root.bind('<Button>', lambda event: check_for_changes())
 root.bind('<KeyPress>', lambda event: check_for_changes())
 root.bind('<Escape>', lambda event: cancel_func())
 
-latest_func = dates
+latest_func = lc
 
 if language == 'en':
     en()
