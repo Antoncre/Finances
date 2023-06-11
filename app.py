@@ -454,6 +454,11 @@ def check_for_changes():
         butt_stable.configure(state='disabled')
         root.bind('<Return>', lambda event: empty_function())
 
+    if button['state'] == 'normal':
+        root.bind('<Control-Return>', lambda event: button_func())
+    else:
+        root.bind('<Control-Return>', lambda event: empty_function())
+
 
 def button_func():
     global last_date
@@ -541,7 +546,7 @@ def delete_items_func():
     def del_butt(li):
         if len(li) == 0:
             tk.messagebox.showinfo(title='Empty list', message="You haven't chosen any elements. Choose elements "
-                                                               "you want to delete, and only then press tis button")
+                                                               "you want to delete, and only then press this button")
         else:
             for e in li:
                 datas.database.delete(e[0], e[2], e[1])
@@ -846,18 +851,21 @@ def edit_category_f():
         c_label = 'Wybierz kategorię'
 
     d_frame = tk.Frame(e_root)
+    d_frame.pack(expand=True, fill='both')
     canvas = tk.Canvas(d_frame, bg="#D7D9D6")
+
     text_field = tk.Text(d_frame, width='250', height='25', wrap='word', bg="#4A4747", fg='white')
     new_frame = tk.Frame(canvas)
     label_selected = tk.Label(d_frame, text=label)
     label_choose = tk.Label(d_frame, text=c_label)
-    del_scrollbar = tk.Scrollbar(text_field, orient="vertical", width='7', command=text_field.yview, cursor='arrow')
+    del_scrollbar = tk.Scrollbar(text_field, orient="vertical", width='7', command=canvas.yview, cursor='arrow')
+    del_scrollbar.pack(side='right', expand=True, fill='y')
     list_of_categories = ttk.Combobox(d_frame, width='25', height='2', state='readonly')
 
     additional_scrollbar = ttk.Scrollbar(d_frame, orient='vertical', command=canvas.yview)
     canvas.configure(yscrollcommand=additional_scrollbar.set)
     canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox('all')))
-    d_frame.pack(expand=True, fill='both')
+
     additional_scrollbar.pack(side='left', fill='y')
     canvas.pack(side='left', expand=True, fill='both')
     canvas.create_window((0, 0), anchor='w', window=new_frame, width='700')
@@ -867,7 +875,6 @@ def edit_category_f():
     label_selected.pack(side='top', fill='x')
 
     text_field.pack(side='top', fill='both', expand=True)
-    del_scrollbar.pack(side='right', expand=False, fill='y')
 
     list_of_categories['values'] = datas.database.ch_categories()
 
