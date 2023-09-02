@@ -18,7 +18,7 @@ def new(p, ds, d=naive_now.strftime('%Y-%m-%d')):
 
 def listing(a=T):
     if a != '':
-        with open(a, 'r') as file:
+        with open(a, 'r', encoding='UTF-8') as file:
             lines = [line.strip().split(',') for line in file.readlines()]
             if lines != [''] or lines != ['\n']:
                 return [
@@ -30,7 +30,7 @@ def listing(a=T):
 
 
 def delete(da, de, pr):
-    with open(T, 'r') as file:
+    with open(T, 'r', encoding='UTF-8') as file:
         lines = [line.strip().split(',') for line in file.readlines()]
     with open(T, 'w') as file:
         for line in lines:
@@ -46,7 +46,7 @@ def del_all():
 
 
 def ch_categories() -> list:
-    with open(C, 'r') as file:
+    with open(C, 'r', encoding='UTF-8') as file:
         categories = file.read().strip().split(',')
         if categories == ['']:
             pass
@@ -61,7 +61,7 @@ def ch_categories() -> list:
 
 def del_from_category(c, e):
     if c != '' and e != '':
-        with open(f'datas/{c}.csv', 'r') as file:
+        with open(f'datas/{c}.csv', 'r', encoding='iso8859_1') as file:
             lines = file.readlines()
         with open(f'datas/{c}.csv', 'w') as file:
             for line in lines:
@@ -122,7 +122,7 @@ def del_category(c):
 def sort(r, tye):
     """this is supposed to execute save all y,m,d one by one"""
     sortered = sorting(r, tye)
-    with open(T, 'w') as file:
+    with open(T, 'w', encoding='UTF-8') as file:
         for e in sortered:
             file.write(f"{e['date']},{e['price']},{e['description']}\n")
 
