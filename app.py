@@ -729,6 +729,7 @@ def add_category_f():
         txt = text_for_category.get('1.0', f'{tk.END}-1c')
         for char in illegal_characters:
             txt = txt.replace(char, '')
+        txt = txt.replace(',', '⸥')
         try:
             """ delete categories from 3:end of categories """
             ch = len(datas.database.ch_categories())
