@@ -12,7 +12,7 @@ naive_now = datetime.now()
 
 
 def new(p, ds, d=naive_now.strftime('%Y-%m-%d')):
-    with open(T, 'a') as file:
+    with open(T, 'a', encoding='UTF-8') as file:
         file.write(f"{d},{p},{ds}\n")
 
 
@@ -32,7 +32,7 @@ def listing(a=T):
 def delete(da, de, pr):
     with open(T, 'r', encoding='UTF-8') as file:
         lines = [line.strip().split(',') for line in file.readlines()]
-    with open(T, 'w') as file:
+    with open(T, 'w', encoding='UTF-8') as file:
         for line in lines:
             if line[0] != da or float(line[1]) != pr or line[2] != de:
                 file.write(f"{line[0]},{line[1]},{line[2]}\n")
@@ -41,7 +41,7 @@ def delete(da, de, pr):
 
 
 def del_all():
-    with open(T, 'w'):
+    with open(T, 'w', encoding='UTF-8'):
         pass
 
 
@@ -53,7 +53,7 @@ def ch_categories() -> list:
         else:
             for e in categories:
                 try:
-                    open(f'datas/{e}.csv', 'x')
+                    open(f'datas/{e}.csv', 'x', encoding='UTF-8')
                 except FileExistsError:
                     pass
     return categories
@@ -63,7 +63,7 @@ def del_from_category(c, e):
     if c != '' and e != '':
         with open(f'datas/{c}.csv', 'r', encoding='UTF-8') as file:
             lines = file.readlines()
-        with open(f'datas/{c}.csv', 'w') as file:
+        with open(f'datas/{c}.csv', 'w', encoding='UTF-8') as file:
             for line in lines:
                 element = line.strip().split(',')
                 if element[0] != e['date'] or element[1] != str(e['price']) or element[2] != e['description']:
@@ -77,10 +77,10 @@ def new_category(c):
             x = 1
     if x == 0:
         if ch_categories() == ['']:
-            with open(C, 'a') as file:
+            with open(C, 'a', encoding='UTF-8') as file:
                 file.write(f'{c}')
         else:
-            with open(C, 'a') as file:
+            with open(C, 'a', encoding='UTF-8') as file:
                 file.write(f',{c}')
     ch_categories()
 
@@ -94,19 +94,19 @@ def add_to_category(c, e):
             else:
                 pass
         if v == 0:
-            with open(f'datas/{c}.csv', 'a') as file:
+            with open(f'datas/{c}.csv', 'a', encoding='UTF-8') as file:
                 file.write(f"{e['date']},{e['price']},{e['description']}\n")
 
 
 def del_category(c):
     b = 0
     lit = ch_categories()
-    open(C, 'w')
+    open(C, 'w', encoding='UTF-8')
     for e in lit:
         if e == c:
             pass
         else:
-            with open(C, 'a') as file:
+            with open(C, 'a', encoding='UTF-8') as file:
                 if b == 0:
                     file.write(f'{e}')
                 else:

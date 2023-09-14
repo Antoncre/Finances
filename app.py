@@ -450,15 +450,12 @@ def check_for_changes():
           what_to_do_text.get('1.0', 'end-1c') == 'Перевірте всі дані та натисніть "Підтвердити" або "Відмінити"'):
         butt_stable.configure(state='disabled')
         root.bind('<Return>', lambda event: empty_function())
+        root.bind('<Control-Return>', lambda event: button_func())
+
     else:
         butt_stable.configure(state='disabled')
         root.bind('<Return>', lambda event: empty_function())
-
-    if button['state'] == 'normal':
-        root.bind('<Control-Return>', lambda event: button_func())
-    else:
         root.bind('<Control-Return>', lambda event: empty_function())
-
 
 def button_func():
     global last_date
@@ -471,6 +468,7 @@ def button_func():
     confirmation_text.configure(state='normal')
     confirmation_text.delete('1.0', 'end-1c')
     confirmation_text.configure(state='disabled')
+    root.bind('<Control-Return>', lambda event: empty_function())
     enter()
 
 
