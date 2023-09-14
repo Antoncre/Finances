@@ -61,7 +61,7 @@ def ch_categories() -> list:
 
 def del_from_category(c, e):
     if c != '' and e != '':
-        with open(f'datas/{c}.csv', 'r', encoding='iso8859_1') as file:
+        with open(f'datas/{c}.csv', 'r', encoding='UTF-8') as file:
             lines = file.readlines()
         with open(f'datas/{c}.csv', 'w') as file:
             for line in lines:
