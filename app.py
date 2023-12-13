@@ -5,11 +5,20 @@ posortowany według daty sposób
 """
 
 import tkinter as tk
-from tkinter import ttk, messagebox
-from datetime import datetime
-from functools import partial
+import configparser
 import datas.database
 import datas.lang_help
+from tkinter import ttk, messagebox
+from tkinter import font as tkFont
+from datetime import datetime
+from functools import partial
+
+
+config = configparser.ConfigParser()
+config.read('datas/config.ini')
+if 'Settings' not in config:
+    config['Settings'] = {'lang': 'ua', 'view': '1'}
+
 
 MONTHS = {
         "01": "January:",
@@ -26,12 +35,19 @@ MONTHS = {
         "12": "December:"
         }
 
-language = 'pl'
+language = config['Settings']['lang']
 now = datetime.now()
-view = 0
+view = config['Settings']['view']
+# -0 - dated 1 -antons arrange 2 - price
 price = ''
 date = ''
-tye = 'date'
+match config['Settings']['view']:
+    case '0':
+        tye = 'date'
+    case '1':
+        tye = 'date'
+    case '2':
+        tye = 'price'
 description = ''
 can_do = 1
 with_dates = 0
@@ -45,6 +61,9 @@ last_date = None
 def en():
     global language, MONTHS
     language = 'en'
+    config['Settings']['lang'] = 'en'
+    with open('datas/config.ini', 'w') as configfile:
+        config.write(configfile)
     cancel_func()
     MONTHS = {
         "01": "January:",
@@ -84,6 +103,9 @@ def en():
 def ua():
     global language, MONTHS
     language = 'ua'
+    config['Settings']['lang'] = 'ua'
+    with open('datas/config.ini', 'w') as configfile:
+        config.write(configfile)
     cancel_func()
     MONTHS = {
         "01": "Січень:",
@@ -123,6 +145,9 @@ def ua():
 def pl():
     global language, MONTHS
     language = 'pl'
+    config['Settings']['lang'] = 'pl'
+    with open('datas/config.ini', 'w') as configfile:
+        config.write(configfile)
     cancel_func()
     MONTHS = {
         "01": "Styczeń:",
@@ -194,6 +219,9 @@ def dates():
     global latest_func, tye, title
     tye = 'date'
     latest_func = dates
+    config['Settings']['view'] = '0'
+    with open('datas/config.ini', 'w') as configfile:
+        config.write(configfile)
     if language == 'ua':
         title = 'Датовано'
     elif language == 'pl':
@@ -226,7 +254,11 @@ def dates():
 
 def pr():
     global latest_func, tye, title
+    latest_func = pr
     tye = 'price'
+    config['Settings']['view'] = '2'
+    with open('datas/config.ini', 'w') as configfile:
+        config.write(configfile)
     if language == 'ua':
         title = 'За вартістю'
     elif language == 'pl':
@@ -261,6 +293,9 @@ def lc():
     global latest_func, tye, title
     tye = 'date'
     latest_func = lc
+    config['Settings']['view'] = '1'
+    with open('datas/config.ini', 'w') as configfile:
+        config.write(configfile)
     if language == 'ua':
         title = 'Структура Антона'
     elif language == 'pl':
@@ -457,6 +492,7 @@ def check_for_changes():
         root.bind('<Return>', lambda event: empty_function())
         root.bind('<Control-Return>', lambda event: empty_function())
 
+
 def button_func():
     global last_date
     datas.database.new(price, description, date)
@@ -552,10 +588,7 @@ def delete_items_func():
             text_field.delete('1.0', tk.END)
             text_field.configure(state='disabled')
             try:
-                if with_dates:
-                    dates()
-                else:
-                    lc()
+                latest_func()
             except tk.TclError:
                 pass
             swap()
@@ -676,10 +709,7 @@ def delete_all_func():
 
         if second:
             datas.database.del_all()
-            if with_dates:
-                dates()
-            else:
-                lc()
+            latest_func()
             if language == 'en':
                 tk.messagebox.showinfo(title='info', message="Deletion completed!")
             elif language == 'pl':
@@ -1162,15 +1192,27 @@ def enter():
     what_to_do_text.configure(state='disabled')
 
 
+def on_close():
+    if root.state() == 'zoomed':
+        config['Settings']['window'] = '1121x678'
+        config['Settings']['full_screen'] = 'True'
+    else:
+        config['Settings']['full_screen'] = 'False'
+        config['Settings']['window'] = root.winfo_geometry()
+    with open('datas/config.ini', 'w') as configfile:
+        config.write(configfile)
+    root.destroy()
+
+
 root = tk.Tk()
-root.geometry('1130x700')
+root.geometry(config['Settings']['window'])
+if config['Settings']['full_screen'] == 'True':
+    root.state("zoomed")
 root.title('Finances app')
 root.option_add('*tearOff', False)
 
-
 frame = ttk.Frame(root)
 frame.pack(fill='both', expand=True, padx=1, pady=(0, 0))
-
 menubar = tk.Menu(root)
 root.config(menu=menubar)
 
@@ -1236,8 +1278,15 @@ root.bind('<Motion>', lambda event: check_for_changes())
 root.bind('<Button>', lambda event: check_for_changes())
 root.bind('<KeyPress>', lambda event: check_for_changes())
 root.bind('<Escape>', lambda event: cancel_func())
+root.protocol("WM_DELETE_WINDOW", on_close)
 
-latest_func = lc
+match config['Settings']['view']:
+    case '0':
+        latest_func = dates
+    case '1':
+        latest_func = lc
+    case '2':
+        latest_func = pr
 
 if language == 'en':
     en()
