@@ -619,6 +619,7 @@ def delete_items_func():
             dict_to_this[n] = ttk.Checkbutton(new_frame, text=f"{to_print_date}  {to_print_price}"
                                                               f"  {exp['description']}\n",
                                                               command=p_inserting)
+            dict_to_this[n].pack(side='top', fill='both')
             n += 1
 
     if language == 'ua':
@@ -637,31 +638,28 @@ def delete_items_func():
     par = partial(del_butt, listy)
 
     d_frame = tk.Frame(d_root)
+    d_frame.pack(expand=True, fill='both')
+
     canvas = tk.Canvas(d_frame, bg="#D7D9D6")
-    text_field = tk.Text(d_frame, width='50', height='25', wrap='word', bg="#4A4747", fg='white')
-    del_selected = tk.Button(d_frame, width='50', height='10', text=dels, bg='#CF5828', fg='white', command=par)
-    new_frame = tk.Frame(canvas)
-    label_selected = tk.Label(d_frame, text=label)
-    del_scrollbar = tk.Scrollbar(text_field, orient="vertical", width='7', command=text_field.yview, cursor='arrow')
+    canvas.pack(side='right', expand=True, fill='both')
 
     additional_scrollbar = ttk.Scrollbar(d_frame, orient='vertical', command=canvas.yview)
+    additional_scrollbar.pack(side='right', fill='y')
+
     canvas.configure(yscrollcommand=additional_scrollbar.set)
-    canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox('all')))
-    d_frame.pack(expand=True, fill='both')
-    additional_scrollbar.pack(side='left', fill='y')
-    canvas.pack(side='left', expand=True, fill='both')
-    canvas.create_window((0, 0), anchor='w', window=new_frame, width='700')
-
-    label_selected.pack(side='top', fill='x')
-
-    text_field.pack(side='top', fill='both', expand=True)
-    del_scrollbar.pack(side='right', expand=False, fill='y')
-
-    del_selected.pack(side='top', fill='both')
+    canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox('all'), height='120000'))
+    new_frame = tk.Frame(canvas)
+    canvas.create_window((0, 0), anchor='nw', window=new_frame)
     add_obj()
 
-    for ob in dict_to_this.values():
-        ob.pack(side='top', fill='x')
+    text_field = tk.Text(d_frame, width='50', height='25', wrap='word', bg="#4A4747", fg='white')
+    del_selected = tk.Button(d_frame, width='50', height='10', text=dels, bg='#CF5828', fg='white', command=par)
+    label_selected = tk.Label(d_frame, text=label)
+    del_scrollbar = tk.Scrollbar(text_field, orient="vertical", width='7', command=text_field.yview, cursor='arrow')
+    label_selected.pack(side='top', fill='x')
+    text_field.pack(side='top', fill='both', expand=True)
+    del_scrollbar.pack(side='right', expand=False, fill='y')
+    del_selected.pack(side='top', fill='both')
 
     text_field["yscrollcommand"] = del_scrollbar.set
     text_field.tag_configure('center', justify='center')
@@ -1212,7 +1210,8 @@ root.title('Finances app')
 root.option_add('*tearOff', False)
 
 frame = ttk.Frame(root)
-frame.pack(fill='both', expand=True, padx=1, pady=(0, 0))
+frame.pack(fill='both',
+           expand=True, padx=1, pady=(0, 0))
 menubar = tk.Menu(root)
 root.config(menu=menubar)
 
