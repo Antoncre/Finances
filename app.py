@@ -137,7 +137,7 @@ def ua():
     delete_menu.entryconfig(0, label='Видалити Елементи')
     delete_menu.entryconfig(1, label='Видалити Все ❗❗❗')
     categories_menu.entryconfig(0, label='+нова категорія+')
-    categories_menu.entryconfig(1, label='~едитувати категорію~')
+    categories_menu.entryconfig(1, label='~редагувати категорію~')
     categories_menu.entryconfig(2, label='-видалити категорію')
     latest_func()
 
@@ -619,8 +619,13 @@ def delete_items_func():
             dict_to_this[n] = ttk.Checkbutton(new_frame, text=f"{to_print_date}  {to_print_price}"
                                                               f"  {exp['description']}\n",
                                                               command=p_inserting)
-            dict_to_this[n].pack(side='top', fill='both')
+            expense = new_frame.create_window(5, n*25, window=dict_to_this[n], anchor="nw")
+            # dict_to_this[n].pack(side='top', expand=True, fill='x')
             n += 1
+        new_frame.update()
+        new_frame.configure(height=n * 25, width=400)
+        # canvas.configure(height=n * 50)
+        canvas.config(height=new_frame.winfo_height(), width=new_frame.winfo_width())
 
     if language == 'ua':
         dels = 'Видвлити вибрані елементи'
@@ -637,29 +642,40 @@ def delete_items_func():
 
     par = partial(del_butt, listy)
 
+    def onCanvasConfigure(e):
+        canvas.itemconfig('frame', height=canvas.winfo_height(), width=canvas.winfo_width())
+
+    def onFrameConfigure():
+        # Reset the scroll region to encompass the inner frame
+        canvas.configure(scrollregion=canvas.bbox("all"))
+
     d_frame = tk.Frame(d_root)
     d_frame.pack(expand=True, fill='both')
-
-    canvas = tk.Canvas(d_frame, bg="#D7D9D6")
-    canvas.pack(side='right', expand=True, fill='both')
-
+    # d_frame.configure(background='black')
+    # canvas = tk.Canvas(d_frame, bg="#D7D9D6")
+    canvas = tk.Canvas(d_frame, bg="lightblue")
     additional_scrollbar = ttk.Scrollbar(d_frame, orient='vertical', command=canvas.yview)
-    additional_scrollbar.pack(side='right', fill='y')
+    additional_scrollbar.pack(side='left', fill='y')
+    canvas.pack(side='left', expand=True, fill='both')
 
-    canvas.configure(yscrollcommand=additional_scrollbar.set)
-    canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox('all'), height='120000'))
-    new_frame = tk.Frame(canvas)
-    canvas.create_window((0, 0), anchor='nw', window=new_frame)
-    add_obj()
 
-    text_field = tk.Text(d_frame, width='50', height='25', wrap='word', bg="#4A4747", fg='white')
+    text_field = tk.Text(d_frame, width=50, height='25', wrap='word', bg="#4A4747", fg='white')
     del_selected = tk.Button(d_frame, width='50', height='10', text=dels, bg='#CF5828', fg='white', command=par)
     label_selected = tk.Label(d_frame, text=label)
     del_scrollbar = tk.Scrollbar(text_field, orient="vertical", width='7', command=text_field.yview, cursor='arrow')
+    del_scrollbar.pack(side='right', expand=False, fill='y')
     label_selected.pack(side='top', fill='x')
     text_field.pack(side='top', fill='both', expand=True)
-    del_scrollbar.pack(side='right', expand=False, fill='y')
     del_selected.pack(side='top', fill='both')
+
+    new_frame = tk.Canvas(canvas)
+    canvas_frame = canvas.create_window((0, 0), anchor='ne', window=new_frame, tags="the_frame") # height here
+    canvas.configure(yscrollcommand=additional_scrollbar.set)
+    #canvas.configure(height=canvas.winfo_height())
+    # canvas.itemconfig(canvas_frame, height=40000)
+    # canvas.configure(height=64800)
+    add_obj()
+    canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox('all')))
 
     text_field["yscrollcommand"] = del_scrollbar.set
     text_field.tag_configure('center', justify='center')
@@ -858,7 +874,12 @@ def edit_category_f():
             dict_to_this[n] = ttk.Checkbutton(new_frame, text=f"{to_print_date}  {to_print_price}"
                                                               f"  {exp['description']}\n",
                                               command=p_inserting)
+            expense = new_frame.create_window(5, n * 25, window=dict_to_this[n], anchor="nw")
             n += 1
+        new_frame.update()
+        new_frame.configure(height=n * 25, width=400)
+        # canvas.configure(height=n * 50)
+        canvas.config(height=new_frame.winfo_height(), width=new_frame.winfo_width())
 
     def checking():
         global old_cat
@@ -881,13 +902,13 @@ def edit_category_f():
     d_frame.pack(expand=True, fill='both')
     canvas = tk.Canvas(d_frame, bg="#D7D9D6")
 
-    text_field = tk.Text(d_frame, width='250', height='25', wrap='word', bg="#4A4747", fg='white')
-    new_frame = tk.Frame(canvas)
+    text_field = tk.Text(d_frame, width=250, height='25', wrap='word', bg="#4A4747", fg='white')
+    new_frame = tk.Canvas(canvas)
     label_selected = tk.Label(d_frame, text=label)
     label_choose = tk.Label(d_frame, text=c_label)
-    del_scrollbar = tk.Scrollbar(text_field, orient="vertical", width='7', command=canvas.yview, cursor='arrow')
-    del_scrollbar.pack(side='right', expand=True, fill='y')
-    list_of_categories = ttk.Combobox(d_frame, width='25', height='2', state='readonly')
+    chose_scrollbar = tk.Scrollbar(text_field, orient="vertical", width='7', command=canvas.yview, cursor='arrow')
+    chose_scrollbar.pack(side='right', fill='y')
+    list_of_categories = ttk.Combobox(d_frame, width=55, height=2, state='readonly')
 
     additional_scrollbar = ttk.Scrollbar(d_frame, orient='vertical', command=canvas.yview)
     canvas.configure(yscrollcommand=additional_scrollbar.set)
@@ -895,7 +916,7 @@ def edit_category_f():
 
     additional_scrollbar.pack(side='left', fill='y')
     canvas.pack(side='left', expand=True, fill='both')
-    canvas.create_window((0, 0), anchor='w', window=new_frame, width='700')
+    canvas.create_window((0, 0), anchor='nw', window=new_frame, width='700')
 
     label_choose.pack(side='top', fill='x')
     list_of_categories.pack(side='top', expand=False)
@@ -907,10 +928,10 @@ def edit_category_f():
 
     add_obj()
 
-    for ob in dict_to_this.values():
-        ob.pack(side='top', fill='x')
+    # for ob in dict_to_this.values():
+    #     ob.pack(side='top', fill='x')
 
-    text_field["yscrollcommand"] = del_scrollbar.set
+    text_field["yscrollcommand"] = chose_scrollbar.set
     text_field.tag_configure('center', justify='center')
     text_field.tag_add('center', 1.0, 'end')
 
