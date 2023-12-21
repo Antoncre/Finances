@@ -35,6 +35,7 @@ MONTHS = {
         "12": "December:"
         }
 
+
 language = config['Settings']['lang']
 now = datetime.now()
 view = config['Settings']['view']
@@ -55,7 +56,9 @@ deleting_item = 0
 latest_func = None
 old_cat = None
 title = 'dates'
-last_date = None
+last_price = config['Settings']['last_price']
+last_date = config['Settings']['last_date']
+last_description = config['Settings']['last_description']
 
 
 def en():
@@ -420,6 +423,7 @@ def check_for_changes():
                         what_to_do_text.get('1.0', 'end-1c') == 'Введіть суму:'):
         butt_stable.configure(state='disabled')
         root.bind('<Return>', lambda event: empty_function())
+        root.bind('<Up>', lambda event: inserting_last_price())
 
     elif content and (what_to_do_text.get('1.0', 'end-1c') == 'Insert price here:' or
                       what_to_do_text.get('1.0', 'end-1c') == 'Wprowadź kwotę:' or
@@ -479,6 +483,7 @@ def check_for_changes():
           what_to_do_text.get('1.0', 'end-1c') == 'Введіть опис:'):
         butt_stable.configure(state='normal')
         root.bind('<Return>', lambda event: enter())
+        root.bind('<Control-Up>', lambda event: inserting_last_description())
 
     elif (what_to_do_text.get('1.0', 'end-1c') == 'Check all info and press "Apply" or "Cancel"' or
           what_to_do_text.get('1.0', 'end-1c') == 'Sprawdź wszystkie dane oraz kliknij "Potwierdź" lub "Anuluj"' or
@@ -494,13 +499,20 @@ def check_for_changes():
 
 
 def button_func():
-    global last_date
+    global last_date, last_price, last_description
     datas.database.new(price, description, date)
     if with_dates:
         dates()
     else:
         lc()
-    last_date = date
+    last_date = str(date)
+    last_price = str(price)
+    last_description = str(description)
+    config['Settings']['last_date'] = str(date)
+    config['Settings']['last_price'] = str(price)
+    config['Settings']['last_description'] = str(description)
+    with open('datas/config.ini', 'w') as configfile:
+        config.write(configfile)
     confirmation_text.configure(state='normal')
     confirmation_text.delete('1.0', 'end-1c')
     confirmation_text.configure(state='disabled')
@@ -519,7 +531,28 @@ def inserting_last_date():
             else:
                 today = now.strftime('%Y-%m-%d')
                 input_text.insert(tk.INSERT, f"{today}")
+            check_for_changes()
 
+
+def inserting_last_price():
+    if can_do and (what_to_do_text.get('1.0', 'end-1c') == 'Insert price here:' or
+                   what_to_do_text.get('1.0', 'end-1c') == 'Wprowadź kwotę:' or
+                   what_to_do_text.get('1.0', 'end-1c') == 'Введіть суму:'):
+        what_to_do_text.delete('1.0', tk.END)
+        if input_text.get('1.0', f"{tk.END}-1c").strip() == '':
+            if last_price:
+                input_text.insert(tk.INSERT, f"{last_price}")
+            check_for_changes()
+
+def inserting_last_description():
+    if can_do and (what_to_do_text.get('1.0', 'end-1c') == 'Insert description here:' or
+                   what_to_do_text.get('1.0', 'end-1c') == 'Wprowadź opis:' or
+                   what_to_do_text.get('1.0', 'end-1c') == 'Введіть опис:'):
+        what_to_do_text.delete('1.0', tk.END)
+        if input_text.get('1.0', f"{tk.END}-1c").strip() == '':
+            if last_description:
+                input_text.insert(tk.INSERT, f"{last_description}")
+            check_for_changes()
 
 def cancel_func():
     global description, date, price, can_do
@@ -548,7 +581,7 @@ def delete_items_func():
 
     d_root = tk.Tk()
 
-    d_root.geometry('1000x750')
+    d_root.geometry('900x750')
 
     if language == 'ua':
         d_root.title('Видалення елементів')
@@ -619,11 +652,11 @@ def delete_items_func():
             dict_to_this[n] = ttk.Checkbutton(new_frame, text=f"{to_print_date}  {to_print_price}"
                                                               f"  {exp['description']}\n",
                                                               command=p_inserting)
-            expense = new_frame.create_window(5, n*25, window=dict_to_this[n], anchor="nw")
+            expense = new_frame.create_window(5, n*25, window=dict_to_this[n], anchor="sw")
             # dict_to_this[n].pack(side='top', expand=True, fill='x')
             n += 1
         new_frame.update()
-        new_frame.configure(height=n * 25, width=400)
+        new_frame.configure(height=n * 25)
         # canvas.configure(height=n * 50)
         canvas.config(height=new_frame.winfo_height(), width=new_frame.winfo_width())
 
@@ -653,7 +686,7 @@ def delete_items_func():
     d_frame.pack(expand=True, fill='both')
     # d_frame.configure(background='black')
     # canvas = tk.Canvas(d_frame, bg="#D7D9D6")
-    canvas = tk.Canvas(d_frame, bg="lightblue")
+    canvas = tk.Canvas(d_frame)
     additional_scrollbar = ttk.Scrollbar(d_frame, orient='vertical', command=canvas.yview)
     additional_scrollbar.pack(side='left', fill='y')
     canvas.pack(side='left', expand=True, fill='both')
@@ -669,7 +702,7 @@ def delete_items_func():
     del_selected.pack(side='top', fill='both')
 
     new_frame = tk.Canvas(canvas)
-    canvas_frame = canvas.create_window((0, 0), anchor='ne', window=new_frame, tags="the_frame") # height here
+    canvas_frame = canvas.create_window((0, 0), anchor='sw', window=new_frame, tags="the_frame") # height here
     canvas.configure(yscrollcommand=additional_scrollbar.set)
     #canvas.configure(height=canvas.winfo_height())
     # canvas.itemconfig(canvas_frame, height=40000)
@@ -874,7 +907,7 @@ def edit_category_f():
             dict_to_this[n] = ttk.Checkbutton(new_frame, text=f"{to_print_date}  {to_print_price}"
                                                               f"  {exp['description']}\n",
                                               command=p_inserting)
-            expense = new_frame.create_window(5, n * 25, window=dict_to_this[n], anchor="nw")
+            expense = new_frame.create_window(5, n * 25, window=dict_to_this[n], anchor="sw")
             n += 1
         new_frame.update()
         new_frame.configure(height=n * 25, width=400)
@@ -916,7 +949,7 @@ def edit_category_f():
 
     additional_scrollbar.pack(side='left', fill='y')
     canvas.pack(side='left', expand=True, fill='both')
-    canvas.create_window((0, 0), anchor='nw', window=new_frame, width='700')
+    canvas.create_window((0, 0), anchor='sw', window=new_frame, width='700')
 
     label_choose.pack(side='top', fill='x')
     list_of_categories.pack(side='top', expand=False)
