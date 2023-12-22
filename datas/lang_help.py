@@ -64,7 +64,7 @@ sorted and printed in nice looking way.
 hu_ua = """
                                                      КОРИСТУВАННЯ
 
-
+0. Гарячі клавіші 
 1. Введення та додавання елементу до списку
    a) Введення суми
    б) Введення дати
@@ -75,7 +75,22 @@ hu_ua = """
 4. Видалення елементів
    а) Видалення вибраних елементів
    б) Видалення усіх елементів
-
+5. Категорії
+   а) Створення категорії
+   б) Редагування категорії
+   в) Видалення категорії
+   г) Перегляд категорії
+   
+0.
+    При введенні суми:
+    "↑" - вводить суму, введену останнім разом
+    При введенні дати:
+    "↑" - вводить дату, введену останнім разом
+    Прм введенні опису:
+    «Ctrl + ↑» – вводить опис, введений останнім разом
+    Під час затвердження:
+    «Ctrl + Enter» - підтверджує замість зеленої кнопки підтвердити
+   
 1.
 
     Варто пам'ятати що на кожному етапі вводу можна скористуватись кнопкою
@@ -140,13 +155,38 @@ a)
     в лівому верхньому кутку та вибираємо «Видалити Все ❗❗❗» після чого 
     підтверджуємо що хочемо видалити всі елементи клацаючи кнопку «ok».
     
+5.
+
+а) Щоб створити категорію виберіть 
+   Категорії -> +нова категорія+
+   та напишіть назву нової категорії
     
+   Увага! Назва не може повторюватись,
+   якщо категорія вже існує то нічого не трапиться 
+      
+б) Щоб змінити елементи в категорії виберіть 
+   Категорії -> ~редагуватм категорію~
+   виберіть назву категорії у верхньому лівому кутку
+   нового вікна та позначайте елементи які хочете щоб були 
+   у вибраній катгорії або відзначайте якщо не хочете
+   щоб вони були у вашій категорії. Всі елементи в категорії
+   записуються автоматично після закриття нового вікна.
+    
+в) Щоб видалити категорію виберіть 
+   Категорії -> -видалити категорію-
+   та виберіть категорію яку хочете видалити
+   
+г) Щоб переглянути категорію виберіть 
+   Категорії -> та виберіть назву вашої  категорії
+   Категорія буде відсортована за датою
+   
                                                                                         автор: Антоній Гуйван
             """
 hu_pl = """
                                                     UŻYTKOWANIE
                                                     
-                                                    
+
+0. Skróty klawiszowe                                     
 1. Wprowadzenie i dodanie elementu do listy
    a) Wprowadzenie kwoty
    b) Wprowadzenie daty
@@ -157,10 +197,24 @@ hu_pl = """
 4. Usuwanie elementów
    a) Usuwanie wybranych elementów
    b) Usuwanie wszystkich elementów
-
+5. Kategorie
+    a) Tworzenie kategorii
+    b) Edycja kategorii
+    c) Usuwanie kategorii
+    d) Przeglądanie kategorii
+    
+0. 
+   Przy wprowadzaniu wartości:
+   "↑" - Wprowadza wartość wpisaną ostatnio
+   Przy wprowadzaniu daty:
+   "↑" - Wprowadza datę wpisaną ostatnio
+   Przy wprowadzaniu opisu:
+   "Ctrl + ↑" - Wprowadza opis wpisany ostatnio
+   Przy Zatwierdzaniu:
+   "Ctrl + Enter" - potwierdza zamiast zielonego przycisku potwierdzenia
 1.
 
-    Warto zaznaczyć że na każdym etapie wpisywania możemy skorzystać
+    Warto zaznaczyć że na każdym etapie wpisywa„Ctrl + Enter” – potwierdza zamiast zielonego przycisku potwierdzeniania możemy skorzystać
     z przycisku 'Anuluj' lub nacisnąć klawisz «Esc» w celu anulowania
     całego procesu wpisywania nowego elementu, 
     co usunie podane wcześniej dane.
@@ -225,13 +279,38 @@ b)
     na panelu menu w lewym górnym rogu i wybieramy 'Usuń wszystko ❗❗❗' po czym 
     zatwierdzamy że chcemy usunąć wszystkie elementy klikając przycisk 'ok'.
     
+5.
+
+a)  Aby utworzyć kategorię, wybierz
+    Kategorie -> +nowa kategoria+
+    i wpisz nazwę nowej kategorii
+    
+    Uwaga! Nazwa nie może się powtarzać,
+    jeśli kategoria już istnieje, nic się nie stanie
+      
+b)  Aby zmienić elementy w kategorii, wybierz
+    Kategorie -> ~edytuj kategorię~
+    wybierz nazwę kategorii w lewym górnym rogu
+    nowe okno i zaznacz elementy, którymi chcesz być
+    w wybranej kategorii lub zaznacz jeśli nie chcesz
+    aby mieć je w swojej kategorii. Wszystkie elementy w danej kategorii
+    rejestrowane są automatycznie po zamknięciu nowego okna.
+    
+c)  Aby usunąć kategorię, wybierz
+    Kategorie -> -usuń kategorię-
+    i wybierz kategorię, którą chcesz usunąć
+   
+d)  Aby wyświetlić kategorię, wybierz
+    Kategorie -> i wybierz nazwę swojej kategorii
+    Kategoria zostanie posortowana według daty
+
     
                                                                                         autor: Antonij Gujwan
             """
 hu_en = """
                                                          USAGE
                                                          
-                                                         
+0. Shortcuts                                                         
 1. Inserting and adding element to a list
    a) Inserting amount
    b) Inserting date
@@ -242,7 +321,22 @@ hu_en = """
 4. Deleting elements
    a) Deleting chosen elements
    b) Deleting all elements
-
+5. Categories
+    a) Creating a category
+    b) Editing a category
+    c) Deleting a category
+    d) Viewing the category
+    
+0.
+   When entering amount:
+   "↑" - Enters the amount entered last
+   When entering a date:
+   "↑" - Enters the last date entered
+   When entering a description:
+   "Ctrl + ↑" - Enters the last description entered
+   When Approving:
+   "Ctrl + Enter" - confirms instead of the green confirm button
+   
 1.
 
     It's important to remember that on every step of inserting we can click
@@ -310,6 +404,30 @@ b)
     click «Delete» on menu panel on upper - left corner
     and choose 'Delete All ❗❗❗' then confirm it by clicking 'ok'.
     
+5.
+
+a)  To create a category, select
+    Categories -> +new category+
+    and write the name of the new category
+    
+    WARNING! Name cannot be repeated,
+    if the category already exists, nothing will happen
+      
+b)  To change items in a category, select
+    Categories -> ~edit category~
+    select the category name in the upper left corner
+    on the new window and mark the elements you want to be
+    in the selected category or tick if you don't want to
+    to have them in your category. All items in a category
+    are saved automatically after closing the new window.
+    
+c)  To delete a category, select
+    Categories -> -delete category-
+    and select the category you want to delete
+   
+d)  To view the category, select
+    Categories -> and select the name of your category
+    Category will be shown sorted by date
     
                                                                                     the author: Antonij Gujwan
             """

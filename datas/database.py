@@ -6,8 +6,8 @@ import os
 from datetime import datetime
 from operator import itemgetter
 
-T = "datas/Transactions.csv"
-C = "datas/categories.csv"
+T = "datas\\Transactions.csv"
+C = "datas\\categories.csv"
 naive_now = datetime.now()
 
 
@@ -53,7 +53,7 @@ def ch_categories() -> list:
         else:
             for e in categories:
                 try:
-                    open(f'datas/{e}.csv', 'x', encoding='UTF-8')
+                    open(f'datas\\{e}.csv', 'x', encoding='UTF-8')
                 except FileExistsError:
                     pass
     return categories
@@ -61,9 +61,9 @@ def ch_categories() -> list:
 
 def del_from_category(c, e):
     if c != '' and e != '':
-        with open(f'datas/{c}.csv', 'r', encoding='UTF-8') as file:
+        with open(f'datas\\{c}.csv', 'r', encoding='UTF-8') as file:
             lines = file.readlines()
-        with open(f'datas/{c}.csv', 'w', encoding='UTF-8') as file:
+        with open(f'datas\\{c}.csv', 'w', encoding='UTF-8') as file:
             for line in lines:
                 element = line.strip().split(',')
                 if element[0] != e['date'] or element[1] != str(e['price']) or element[2] != e['description']:
@@ -88,13 +88,13 @@ def new_category(c):
 def add_to_category(c, e):
     v = 0
     if c != '' and e != '':
-        for el in listing(f'datas/{c}.csv'):
+        for el in listing(f'datas\\{c}.csv'):
             if el['date'] == e['date'] and el['price'] == e['price'] and el['description'] == e['description']:
                 v += 1
             else:
                 pass
         if v == 0:
-            with open(f'datas/{c}.csv', 'a', encoding='UTF-8') as file:
+            with open(f'datas\\{c}.csv', 'a', encoding='UTF-8') as file:
                 file.write(f"{e['date']},{e['price']},{e['description']}\n")
 
 
@@ -114,7 +114,7 @@ def del_category(c):
                 b += 1
 
     try:
-        os.remove(f'datas/{c}.csv')
+        os.remove(f'datas\\{c}.csv')
     except FileNotFoundError:
         pass
 

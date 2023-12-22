@@ -6,6 +6,8 @@ posortowany według daty sposób
 
 import tkinter as tk
 import configparser
+import sys
+import os
 import datas.database
 import datas.lang_help
 from tkinter import ttk, messagebox
@@ -13,11 +15,26 @@ from tkinter import font as tkFont
 from datetime import datetime
 from functools import partial
 
+# TODO export it all
+# TODO add exporting to an excel
+# TODO Add font size change
+# TODO make it all in cutomtkinter
+
 
 config = configparser.ConfigParser()
-config.read('datas/config.ini')
-if 'Settings' not in config:
-    config['Settings'] = {'lang': 'ua', 'view': '1'}
+config.read('config.ini')
+if 'general' not in config:
+    config['general'] = {'lang': 'ua', 'view': '1', 'window': '1121x678+235+192', 'window_height': 'default',
+                         'full_screen': 'False', 'last_date': ' 2023-12-22', 'last_price': '1', 'last_description': ''}
+
+
+def resource_path(relative_path):
+    return relative_path
+    # try:
+    #     base_path = sys._MEIPASS
+    # except Exception:
+    #     base_path = ''
+    # return os.path.join(base_path, relative_path)
 
 
 MONTHS = {
@@ -36,13 +53,13 @@ MONTHS = {
         }
 
 
-language = config['Settings']['lang']
+language = config['general']['lang']
 now = datetime.now()
-view = config['Settings']['view']
+view = config['general']['view']
 # -0 - dated 1 -antons arrange 2 - price
 price = ''
 date = ''
-match config['Settings']['view']:
+match config['general']['view']:
     case '0':
         tye = 'date'
     case '1':
@@ -51,21 +68,20 @@ match config['Settings']['view']:
         tye = 'price'
 description = ''
 can_do = 1
-with_dates = 0
 deleting_item = 0
 latest_func = None
 old_cat = None
 title = 'dates'
-last_price = config['Settings']['last_price']
-last_date = config['Settings']['last_date']
-last_description = config['Settings']['last_description']
+last_price = config['general']['last_price']
+last_date = config['general']['last_date']
+last_description = config['general']['last_description']
 
 
 def en():
     global language, MONTHS
     language = 'en'
-    config['Settings']['lang'] = 'en'
-    with open('datas/config.ini', 'w') as configfile:
+    config['general']['lang'] = 'en'
+    with open('config.ini', 'w') as configfile:
         config.write(configfile)
     cancel_func()
     MONTHS = {
@@ -106,8 +122,8 @@ def en():
 def ua():
     global language, MONTHS
     language = 'ua'
-    config['Settings']['lang'] = 'ua'
-    with open('datas/config.ini', 'w') as configfile:
+    config['general']['lang'] = 'ua'
+    with open('config.ini', 'w') as configfile:
         config.write(configfile)
     cancel_func()
     MONTHS = {
@@ -148,8 +164,8 @@ def ua():
 def pl():
     global language, MONTHS
     language = 'pl'
-    config['Settings']['lang'] = 'pl'
-    with open('datas/config.ini', 'w') as configfile:
+    config['general']['lang'] = 'pl'
+    with open('config.ini', 'w') as configfile:
         config.write(configfile)
     cancel_func()
     MONTHS = {
@@ -222,8 +238,8 @@ def dates():
     global latest_func, tye, title
     tye = 'date'
     latest_func = dates
-    config['Settings']['view'] = '0'
-    with open('datas/config.ini', 'w') as configfile:
+    config['general']['view'] = '0'
+    with open('config.ini', 'w') as configfile:
         config.write(configfile)
     if language == 'ua':
         title = 'Датовано'
@@ -259,8 +275,8 @@ def pr():
     global latest_func, tye, title
     latest_func = pr
     tye = 'price'
-    config['Settings']['view'] = '2'
-    with open('datas/config.ini', 'w') as configfile:
+    config['general']['view'] = '2'
+    with open('config.ini', 'w') as configfile:
         config.write(configfile)
     if language == 'ua':
         title = 'За вартістю'
@@ -296,8 +312,8 @@ def lc():
     global latest_func, tye, title
     tye = 'date'
     latest_func = lc
-    config['Settings']['view'] = '1'
-    with open('datas/config.ini', 'w') as configfile:
+    config['general']['view'] = '1'
+    with open('config.ini', 'w') as configfile:
         config.write(configfile)
     if language == 'ua':
         title = 'Структура Антона'
@@ -501,17 +517,14 @@ def check_for_changes():
 def button_func():
     global last_date, last_price, last_description
     datas.database.new(price, description, date)
-    if with_dates:
-        dates()
-    else:
-        lc()
+    latest_func()
     last_date = str(date)
     last_price = str(price)
     last_description = str(description)
-    config['Settings']['last_date'] = str(date)
-    config['Settings']['last_price'] = str(price)
-    config['Settings']['last_description'] = str(description)
-    with open('datas/config.ini', 'w') as configfile:
+    config['general']['last_date'] = str(date)
+    config['general']['last_price'] = str(price)
+    config['general']['last_description'] = str(description)
+    with open('config.ini', 'w') as configfile:
         config.write(configfile)
     confirmation_text.configure(state='normal')
     confirmation_text.delete('1.0', 'end-1c')
@@ -544,6 +557,7 @@ def inserting_last_price():
                 input_text.insert(tk.INSERT, f"{last_price}")
             check_for_changes()
 
+
 def inserting_last_description():
     if can_do and (what_to_do_text.get('1.0', 'end-1c') == 'Insert description here:' or
                    what_to_do_text.get('1.0', 'end-1c') == 'Wprowadź opis:' or
@@ -553,6 +567,7 @@ def inserting_last_description():
             if last_description:
                 input_text.insert(tk.INSERT, f"{last_description}")
             check_for_changes()
+
 
 def cancel_func():
     global description, date, price, can_do
@@ -582,6 +597,7 @@ def delete_items_func():
     d_root = tk.Tk()
 
     d_root.geometry('900x750')
+    root.iconbitmap('icon.ico')
 
     if language == 'ua':
         d_root.title('Видалення елементів')
@@ -800,7 +816,7 @@ def add_category_f():
 
     def tiny_button_f():
         illegal_characters = ['!', '@', '#', '$', '%', '&', '*', '"', "'", '+', '=', '{',
-                              '}', '<', '>', '?', '/', '\n', '`', '|']
+                              '}', '<', '>', '?', '\\', '\n', '`', '|']
         txt = text_for_category.get('1.0', f'{tk.END}-1c')
         for char in illegal_characters:
             txt = txt.replace(char, '')
@@ -871,7 +887,7 @@ def edit_category_f():
                 dict_to_this[o[0]].state(['!selected'])
 
             for o in complete_list:
-                for el in datas.database.listing(f'datas/{current}.csv'):
+                for el in datas.database.listing(resource_path(f'datas\\{current}.csv')):
                     if el['date'] == o[1] and el['price'] == o[2] and el['description'] == o[3]:
                         dict_to_this[o[0]].state(['!alternate'])
                         dict_to_this[o[0]].state(['selected'])
@@ -1029,7 +1045,7 @@ def delete_category_f():
 
 def read_from_categories(t):
     a = []
-    for el in datas.database.listing(f'datas/{t}.csv'):
+    for el in datas.database.listing(resource_path(f'datas\\{t}.csv')):
         try:
             a.append(el['price'])
         except IndexError:
@@ -1038,7 +1054,7 @@ def read_from_categories(t):
     display_text.configure(state='normal')
     display_text.delete('1.0', tk.END)
     display_text.insert(tk.END, f'{t.upper()}\n_______________\n')
-    for exp in datas.database.listing(f'datas/{t}.csv'):
+    for exp in datas.database.listing(resource_path(f'datas\\{t}.csv')):
         if exp == ['']:
             pass
         else:
@@ -1126,6 +1142,7 @@ def enter():
                     price = float(f"{content.split(',')[0]}.{content.split(',')[1]}")
                 except IndexError:
                     price = float(content)
+            input_text.focus_set()
 
         if price > 0:
             if language == 'en':
@@ -1242,23 +1259,24 @@ def enter():
 
     confirmation_text.configure(state='disabled')
     what_to_do_text.configure(state='disabled')
+    check_for_changes()
 
 
 def on_close():
     if root.state() == 'zoomed':
-        config['Settings']['window'] = '1121x678'
-        config['Settings']['full_screen'] = 'True'
+        config['general']['window'] = '1121x678'
+        config['general']['full_screen'] = 'True'
     else:
-        config['Settings']['full_screen'] = 'False'
-        config['Settings']['window'] = root.winfo_geometry()
-    with open('datas/config.ini', 'w') as configfile:
+        config['general']['full_screen'] = 'False'
+        config['general']['window'] = root.winfo_geometry()
+    with open('config.ini', 'w') as configfile:
         config.write(configfile)
     root.destroy()
 
 
 root = tk.Tk()
-root.geometry(config['Settings']['window'])
-if config['Settings']['full_screen'] == 'True':
+root.geometry(config['general']['window'])
+if config['general']['full_screen'] == 'True':
     root.state("zoomed")
 root.title('Finances app')
 root.option_add('*tearOff', False)
@@ -1320,6 +1338,8 @@ my_scrollbar.pack(side='left', expand=False, fill='y')
 display_text.pack(side='left', expand=True, fill='both')
 confirmation_text.pack(side='top', expand=True, fill='both')
 input_text.pack(side='bottom', expand=True, fill='both')
+input_text.focus_set()
+input_text.config(insertbackground='white')
 cancel.pack(side='left')
 what_to_do_text.pack(side='left', expand=True, fill='both')
 button.pack(side='right')
@@ -1333,7 +1353,7 @@ root.bind('<KeyPress>', lambda event: check_for_changes())
 root.bind('<Escape>', lambda event: cancel_func())
 root.protocol("WM_DELETE_WINDOW", on_close)
 
-match config['Settings']['view']:
+match config['general']['view']:
     case '0':
         latest_func = dates
     case '1':
