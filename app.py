@@ -597,7 +597,6 @@ def delete_items_func():
     d_root = tk.Tk()
 
     d_root.geometry('900x750')
-    root.iconbitmap('icon.ico')
 
     if language == 'ua':
         d_root.title('Видалення елементів')
@@ -668,11 +667,12 @@ def delete_items_func():
             dict_to_this[n] = ttk.Checkbutton(new_frame, text=f"{to_print_date}  {to_print_price}"
                                                               f"  {exp['description']}\n",
                                                               command=p_inserting)
-            expense = new_frame.create_window(5, n*25, window=dict_to_this[n], anchor="sw")
+
+            expense = new_frame.create_window(5, (n+2)*23.5, window=dict_to_this[n], anchor="sw")
             # dict_to_this[n].pack(side='top', expand=True, fill='x')
             n += 1
         new_frame.update()
-        new_frame.configure(height=n * 25)
+        new_frame.configure(height=(n+2) * 23.5)
         # canvas.configure(height=n * 50)
         canvas.config(height=new_frame.winfo_height(), width=new_frame.winfo_width())
 
@@ -707,7 +707,6 @@ def delete_items_func():
     additional_scrollbar.pack(side='left', fill='y')
     canvas.pack(side='left', expand=True, fill='both')
 
-
     text_field = tk.Text(d_frame, width=50, height='25', wrap='word', bg="#4A4747", fg='white')
     del_selected = tk.Button(d_frame, width='50', height='10', text=dels, bg='#CF5828', fg='white', command=par)
     label_selected = tk.Label(d_frame, text=label)
@@ -718,7 +717,7 @@ def delete_items_func():
     del_selected.pack(side='top', fill='both')
 
     new_frame = tk.Canvas(canvas)
-    canvas_frame = canvas.create_window((0, 0), anchor='sw', window=new_frame, tags="the_frame") # height here
+    canvas_frame = canvas.create_window((0, 0), anchor='sw', window=new_frame, tags="the_frame", width=500) # height here
     canvas.configure(yscrollcommand=additional_scrollbar.set)
     #canvas.configure(height=canvas.winfo_height())
     # canvas.itemconfig(canvas_frame, height=40000)
@@ -923,10 +922,10 @@ def edit_category_f():
             dict_to_this[n] = ttk.Checkbutton(new_frame, text=f"{to_print_date}  {to_print_price}"
                                                               f"  {exp['description']}\n",
                                               command=p_inserting)
-            expense = new_frame.create_window(5, n * 25, window=dict_to_this[n], anchor="sw")
+            expense = new_frame.create_window(5, (n+1) * 23, window=dict_to_this[n], anchor="w")
             n += 1
         new_frame.update()
-        new_frame.configure(height=n * 25, width=400)
+        new_frame.configure(height=(n+1) * 23, width=400)
         # canvas.configure(height=n * 50)
         canvas.config(height=new_frame.winfo_height(), width=new_frame.winfo_width())
 
@@ -957,7 +956,7 @@ def edit_category_f():
     label_choose = tk.Label(d_frame, text=c_label)
     chose_scrollbar = tk.Scrollbar(text_field, orient="vertical", width='7', command=canvas.yview, cursor='arrow')
     chose_scrollbar.pack(side='right', fill='y')
-    list_of_categories = ttk.Combobox(d_frame, width=55, height=2, state='readonly')
+    list_of_categories = ttk.Combobox(d_frame, width=55, state='readonly')
 
     additional_scrollbar = ttk.Scrollbar(d_frame, orient='vertical', command=canvas.yview)
     canvas.configure(yscrollcommand=additional_scrollbar.set)
@@ -1275,6 +1274,7 @@ def on_close():
 
 
 root = tk.Tk()
+root.iconbitmap('icon.ico')
 root.geometry(config['general']['window'])
 if config['general']['full_screen'] == 'True':
     root.state("zoomed")
