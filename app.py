@@ -25,7 +25,7 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 if 'general' not in config:
     config['general'] = {'lang': 'ua', 'view': '1', 'window': '1121x678+235+192', 'window_height': 'default',
-                         'full_screen': 'False', 'last_date': ' 2023-12-22', 'last_price': '1', 'last_description': ''}
+                         'full_screen': 'False', 'last_date': ' 2023-12-22', 'last_price': '1', 'last_description': '0'}
 
 
 def resource_path(relative_path):
@@ -523,7 +523,10 @@ def button_func():
     last_description = str(description)
     config['general']['last_date'] = str(date)
     config['general']['last_price'] = str(price)
-    config['general']['last_description'] = str(description)
+    if str(description):
+        config['general']['last_description'] = str(description)
+    else:
+        config['general']['last_description'] = str(0)
     with open('config.ini', 'w') as configfile:
         config.write(configfile)
     confirmation_text.configure(state='normal')
