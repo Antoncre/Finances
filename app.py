@@ -668,11 +668,11 @@ def delete_items_func():
                                                               f"  {exp['description']}\n",
                                                               command=p_inserting)
 
-            expense = new_frame.create_window(5, (n+2)*23.5, window=dict_to_this[n], anchor="sw")
+            expense = new_frame.create_window(5, (n+2)*15, window=dict_to_this[n], anchor="sw")
             # dict_to_this[n].pack(side='top', expand=True, fill='x')
             n += 1
         new_frame.update()
-        new_frame.configure(height=(n+2) * 23.5)
+        new_frame.configure(height=(n+2) * 15)
         # canvas.configure(height=n * 50)
         canvas.config(height=new_frame.winfo_height(), width=new_frame.winfo_width())
 
@@ -922,10 +922,10 @@ def edit_category_f():
             dict_to_this[n] = ttk.Checkbutton(new_frame, text=f"{to_print_date}  {to_print_price}"
                                                               f"  {exp['description']}\n",
                                               command=p_inserting)
-            expense = new_frame.create_window(5, (n+1) * 23, window=dict_to_this[n], anchor="w")
+            expense = new_frame.create_window(5, (n+1) * 15, window=dict_to_this[n], anchor="w")
             n += 1
         new_frame.update()
-        new_frame.configure(height=(n+1) * 23, width=400)
+        new_frame.configure(height=(n+1) * 15, width=400)
         # canvas.configure(height=n * 50)
         canvas.config(height=new_frame.winfo_height(), width=new_frame.winfo_width())
 
