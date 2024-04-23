@@ -15,7 +15,7 @@ from datetime import datetime
 from functools import partial
 
 # TODO export it all
-# TODO add exporting to an excel
+# TODO add exporting to an excel (not relevant)
 # TODO Add font size change
 # TODO make it all in customtkinter
 
