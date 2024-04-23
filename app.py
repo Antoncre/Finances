@@ -17,7 +17,7 @@ from functools import partial
 # TODO export it all
 # TODO add exporting to an excel
 # TODO Add font size change
-# TODO make it all in cutomtkinter
+# TODO make it all in customtkinter
 
 
 config = configparser.ConfigParser()
