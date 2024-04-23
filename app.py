@@ -3,7 +3,7 @@ Dzięki tej aplikacji użytkownicy mogą dodawać
 swoje wydatki i dochody oraz wyświetlać je w wygodny,
 posortowany według daty sposób
 """
-#TODO: weź i ustaw konfiguracje by można było na serwerze przesyłać dane z database
+# TODO: weź i ustaw konfiguracje by można było na serwerze przesyłać dane z database
 
 import tkinter as tk
 import configparser
@@ -11,7 +11,6 @@ import os
 import datas.database
 import datas.lang_help
 from tkinter import ttk, messagebox
-from tkinter import font as tkFont
 from datetime import datetime
 from functools import partial
 

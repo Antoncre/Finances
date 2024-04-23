@@ -16,6 +16,18 @@ def new(p, ds, d=naive_now.strftime('%Y-%m-%d')):
         file.write(f"{d},{p},{ds}\n")
 
 
+def update_from_server():
+    # check for differences
+    # and download if present
+    pass
+
+
+def upload_to_server():
+    # check for differences
+    # and upload if present
+    pass
+
+
 def listing(a=T):
     if a != '':
         with open(a, 'r', encoding='UTF-8') as file:
