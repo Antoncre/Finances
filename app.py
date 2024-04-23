@@ -3,10 +3,10 @@ Dzięki tej aplikacji użytkownicy mogą dodawać
 swoje wydatki i dochody oraz wyświetlać je w wygodny,
 posortowany według daty sposób
 """
+#TODO: weź i ustaw konfiguracje by można było na serwerze przesyłać dane z database
 
 import tkinter as tk
 import configparser
-import sys
 import os
 import datas.database
 import datas.lang_help
@@ -493,6 +493,7 @@ def check_for_changes():
         butt_stable.configure(state='normal')
         root.bind('<Return>', lambda event: enter())
         root.bind('<Up>', lambda event: inserting_last_date())
+        root.bind('<Control-Return>', lambda event: empty_function())
 
     elif (what_to_do_text.get('1.0', 'end-1c') == 'Insert description here:' or
           what_to_do_text.get('1.0', 'end-1c') == 'Wprowadź opis:' or
@@ -500,6 +501,7 @@ def check_for_changes():
         butt_stable.configure(state='normal')
         root.bind('<Return>', lambda event: enter())
         root.bind('<Control-Up>', lambda event: inserting_last_description())
+        root.bind('<Control-Return>', lambda event: empty_function())
 
     elif (what_to_do_text.get('1.0', 'end-1c') == 'Check all info and press "Apply" or "Cancel"' or
           what_to_do_text.get('1.0', 'end-1c') == 'Sprawdź wszystkie dane oraz kliknij "Potwierdź" lub "Anuluj"' or
